@@ -31,6 +31,7 @@ public:
 private slots:
     void onAddContact();
     void onClearForm();
+    void onCallsignTextEdited(const QString &text);
     void onCallsignChanged();
     void onCallsignLookupFinished(const QString &callsign, const QString &dxcc, const QString &locator);
     void onCallsignLookupError(const QString &callsign, const QString &error);

@@ -88,6 +88,9 @@ void SetupDialog::setupOperatorTab()
     QRegularExpression callsignRegex("^[A-Z0-9]{1,10}$");
     m_callsignEdit->setValidator(new QRegularExpressionValidator(callsignRegex, this));
     
+    // Connetti il segnale per convertire automaticamente in maiuscolo
+    connect(m_callsignEdit, &QLineEdit::textEdited, this, &SetupDialog::onCallsignTextEdited);
+    
     m_operatorLayout->addWidget(m_callsignLabel, 0, 0);
     m_operatorLayout->addWidget(m_callsignEdit, 0, 1);
     
@@ -433,6 +436,19 @@ void SetupDialog::setOperatorData(const OperatorData &data)
     m_firstNameEdit->setText(data.firstName);
     m_lastNameEdit->setText(data.lastName);
     m_locatorEdit->setText(data.locator);
+}
+
+void SetupDialog::onCallsignTextEdited(const QString &text)
+{
+    // Blocca temporaneamente i segnali per evitare ricorsione
+    m_callsignEdit->blockSignals(true);
+    
+    // Converte automaticamente in maiuscolo
+    QString upperText = text.toUpper();
+    m_callsignEdit->setText(upperText);
+    
+    // Ripristina i segnali
+    m_callsignEdit->blockSignals(false);
 }
 
 void SetupDialog::setApiCredentials(const ApiCredentials &credentials)

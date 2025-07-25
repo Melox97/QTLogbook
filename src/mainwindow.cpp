@@ -82,6 +82,10 @@ void MainWindow::setupUI()
     m_callsignEdit->setPlaceholderText("Es: IZ0ABC");
     m_callsignEdit->setAccessibleName("Campo nominativo radioamatoriale");
     m_callsignEdit->setAccessibleDescription("Inserire il nominativo della stazione contattata");
+    
+    // Connetti il segnale per convertire automaticamente in maiuscolo
+    connect(m_callsignEdit, &QLineEdit::textEdited, this, &MainWindow::onCallsignTextEdited);
+    
     m_formLayout->addWidget(m_callsignLabel, 1, 0);
     m_formLayout->addWidget(m_callsignEdit, 1, 1);
     
@@ -270,6 +274,27 @@ void MainWindow::onAddContact()
 void MainWindow::onClearForm()
 {
     clearForm();
+}
+
+void MainWindow::onCallsignTextEdited(const QString &text)
+{
+    // Blocca temporaneamente i segnali per evitare ricorsione
+    m_callsignEdit->blockSignals(true);
+    
+    // Converte automaticamente in maiuscolo
+    QString upperText = text.toUpper();
+    m_callsignEdit->setText(upperText);
+    
+    // Ripristina i segnali
+    m_callsignEdit->blockSignals(false);
+    
+    // Trigger del lookup se il nominativo è abbastanza lungo
+    if (upperText.length() >= 3) {
+        m_apiService->lookupCallsign(upperText);
+    } else {
+        m_dxccEdit->clear();
+        m_locatorEdit->clear();
+    }
 }
 
 void MainWindow::onCallsignChanged()

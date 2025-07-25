@@ -27,14 +27,14 @@ public:
     // Setters
     void setId(int id) { m_id = id; }
     void setDateTime(const QDateTime &dateTime) { m_dateTime = dateTime; }
-    void setCallsign(const QString &callsign) { m_callsign = callsign; }
+    void setCallsign(const QString &callsign) { m_callsign = callsign.toUpper(); }
     void setBand(const QString &band) { m_band = band; }
     void setMode(const QString &mode) { m_mode = mode; }
     void setRstSent(const QString &rst) { m_rstSent = rst; }
     void setRstReceived(const QString &rst) { m_rstReceived = rst; }
     void setDxcc(const QString &dxcc) { m_dxcc = dxcc; }
     void setLocator(const QString &locator) { m_locator = locator; }
-    void setOperatorCall(const QString &operatorCall) { m_operatorCall = operatorCall; }
+    void setOperatorCall(const QString &operatorCall) { m_operatorCall = operatorCall.toUpper(); }
 
     // Validation
     bool isValid() const;

@@ -47,6 +47,7 @@ public:
     void setApiCredentials(const ApiCredentials &credentials);
     
 public slots:
+    void onCallsignTextEdited(const QString &text);
     void onQrzCredentialsChanged();
     void onClublogCredentialsChanged();
     void onTestQrzConnection();
