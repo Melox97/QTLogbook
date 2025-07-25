@@ -115,11 +115,11 @@ void SetupDialog::setupOperatorTab()
     // Locatore
     m_locatorLabel = new QLabel("Locatore:");
     m_locatorEdit = new QLineEdit();
-    m_locatorEdit->setPlaceholderText("Es: JN45AB");
+    m_locatorEdit->setPlaceholderText("Es: JN45 o JN45AB");
     m_locatorEdit->setAccessibleName("Campo locatore Maidenhead");
     
-    // Validatore per locatore
-    QRegularExpression locatorRegex("^[A-R]{2}[0-9]{2}[A-X]{2}$");
+    // Validatore per locatore (4 o 6 caratteri)
+    QRegularExpression locatorRegex("^[A-R]{2}[0-9]{2}([A-X]{2})?$");
     m_locatorEdit->setValidator(new QRegularExpressionValidator(locatorRegex, this));
     
     m_operatorLayout->addWidget(m_locatorLabel, 3, 0);
@@ -362,7 +362,7 @@ bool SetupDialog::validateOperatorData() const
         if (!locatorRegex.match(locator).hasMatch()) {
             QMessageBox::warning(const_cast<SetupDialog*>(this), "Errore Validazione", 
                                "Il formato del locatore non è valido. "
-                               "Deve essere nel formato Maidenhead (es: JN45AB).");
+                               "Deve essere nel formato Maidenhead a 4 o 6 caratteri (es: JN45 o JN45AB).");
             return false;
         }
     }
