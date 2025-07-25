@@ -1,0 +1,139 @@
+{
+  "modes": [
+    {
+      "name": "CW",
+      "description": "Continuous Wave (Morse Code)",
+      "category": "Digital"
+    },
+    {
+      "name": "SSB",
+      "description": "Single Side Band",
+      "category": "Voice"
+    },
+    {
+      "name": "USB",
+      "description": "Upper Side Band",
+      "category": "Voice"
+    },
+    {
+      "name": "LSB",
+      "description": "Lower Side Band",
+      "category": "Voice"
+    },
+    {
+      "name": "AM",
+      "description": "Amplitude Modulation",
+      "category": "Voice"
+    },
+    {
+      "name": "FM",
+      "description": "Frequency Modulation",
+      "category": "Voice"
+    },
+    {
+      "name": "RTTY",
+      "description": "Radio Teletype",
+      "category": "Digital"
+    },
+    {
+      "name": "PSK31",
+      "description": "Phase Shift Keying 31 baud",
+      "category": "Digital"
+    },
+    {
+      "name": "PSK63",
+      "description": "Phase Shift Keying 63 baud",
+      "category": "Digital"
+    },
+    {
+      "name": "FT8",
+      "description": "Franke-Taylor 8-FSK",
+      "category": "Digital"
+    },
+    {
+      "name": "FT4",
+      "description": "Franke-Taylor 4-FSK",
+      "category": "Digital"
+    },
+    {
+      "name": "JT65",
+      "description": "Joe Taylor 65-tone",
+      "category": "Digital"
+    },
+    {
+      "name": "JT9",
+      "description": "Joe Taylor 9-tone",
+      "category": "Digital"
+    },
+    {
+      "name": "MSK144",
+      "description": "Minimum Shift Keying 144 baud",
+      "category": "Digital"
+    },
+    {
+      "name": "MFSK",
+      "description": "Multiple Frequency Shift Keying",
+      "category": "Digital"
+    },
+    {
+      "name": "OLIVIA",
+      "description": "Olivia MFSK",
+      "category": "Digital"
+    },
+    {
+      "name": "CONTESTIA",
+      "description": "Contestia MFSK",
+      "category": "Digital"
+    },
+    {
+      "name": "HELL",
+      "description": "Hellschreiber",
+      "category": "Digital"
+    },
+    {
+      "name": "SSTV",
+      "description": "Slow Scan Television",
+      "category": "Image"
+    },
+    {
+      "name": "FAX",
+      "description": "Facsimile",
+      "category": "Image"
+    },
+    {
+      "name": "PACKET",
+      "description": "Packet Radio",
+      "category": "Digital"
+    },
+    {
+      "name": "WINMOR",
+      "description": "WINMOR",
+      "category": "Digital"
+    },
+    {
+      "name": "ARDOP",
+      "description": "Amateur Radio Digital Open Protocol",
+      "category": "Digital"
+    },
+    {
+      "name": "VARA",
+      "description": "VARA HF/FM",
+      "category": "Digital"
+    },
+    {
+      "name": "JS8",
+      "description": "JS8Call",
+      "category": "Digital"
+    },
+    {
+      "name": "Q65",
+      "description": "Q65",
+      "category": "Digital"
+    },
+    {
+      "name": "FSQ",
+      "description": "Fast Simple QSO",
+      "category": "Digital"
+    }
+  ]
+}

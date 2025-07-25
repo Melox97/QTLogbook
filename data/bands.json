@@ -1,0 +1,109 @@
+{
+  "bands": [
+    {
+      "name": "160m",
+      "frequency": "1.8 MHz",
+      "wavelength": "160m"
+    },
+    {
+      "name": "80m",
+      "frequency": "3.5 MHz",
+      "wavelength": "80m"
+    },
+    {
+      "name": "60m",
+      "frequency": "5 MHz",
+      "wavelength": "60m"
+    },
+    {
+      "name": "40m",
+      "frequency": "7 MHz",
+      "wavelength": "40m"
+    },
+    {
+      "name": "30m",
+      "frequency": "10 MHz",
+      "wavelength": "30m"
+    },
+    {
+      "name": "20m",
+      "frequency": "14 MHz",
+      "wavelength": "20m"
+    },
+    {
+      "name": "17m",
+      "frequency": "18 MHz",
+      "wavelength": "17m"
+    },
+    {
+      "name": "15m",
+      "frequency": "21 MHz",
+      "wavelength": "15m"
+    },
+    {
+      "name": "12m",
+      "frequency": "24 MHz",
+      "wavelength": "12m"
+    },
+    {
+      "name": "10m",
+      "frequency": "28 MHz",
+      "wavelength": "10m"
+    },
+    {
+      "name": "6m",
+      "frequency": "50 MHz",
+      "wavelength": "6m"
+    },
+    {
+      "name": "4m",
+      "frequency": "70 MHz",
+      "wavelength": "4m"
+    },
+    {
+      "name": "2m",
+      "frequency": "144 MHz",
+      "wavelength": "2m"
+    },
+    {
+      "name": "1.25m",
+      "frequency": "222 MHz",
+      "wavelength": "1.25m"
+    },
+    {
+      "name": "70cm",
+      "frequency": "432 MHz",
+      "wavelength": "70cm"
+    },
+    {
+      "name": "33cm",
+      "frequency": "902 MHz",
+      "wavelength": "33cm"
+    },
+    {
+      "name": "23cm",
+      "frequency": "1.2 GHz",
+      "wavelength": "23cm"
+    },
+    {
+      "name": "13cm",
+      "frequency": "2.3 GHz",
+      "wavelength": "13cm"
+    },
+    {
+      "name": "9cm",
+      "frequency": "3.4 GHz",
+      "wavelength": "9cm"
+    },
+    {
+      "name": "6cm",
+      "frequency": "5.7 GHz",
+      "wavelength": "6cm"
+    },
+    {
+      "name": "3cm",
+      "frequency": "10 GHz",
+      "wavelength": "3cm"
+    }
+  ]
+}

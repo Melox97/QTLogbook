@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>data/bands.json</file>
+        <file>data/modes.json</file>
+    </qresource>
+</RCC>
