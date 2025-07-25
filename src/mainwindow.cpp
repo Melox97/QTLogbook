@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "settingsdialog.h"
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
@@ -340,20 +341,51 @@ void MainWindow::onAbout()
 
 void MainWindow::onSettings()
 {
-    bool ok;
-    QString currentOperator = m_database->getOperatorCall();
-    QString operatorCall = QInputDialog::getText(this, "Impostazioni",
-                                                "Nominativo Operatore:", QLineEdit::Normal,
-                                                currentOperator, &ok);
+    SettingsDialog settingsDialog(this);
     
-    if (ok && !operatorCall.isEmpty()) {
-        if (m_database->setOperatorCall(operatorCall.toUpper())) {
-            m_operatorEdit->setText(operatorCall.toUpper());
-            statusBar()->showMessage("Operatore configurato: " + operatorCall.toUpper(), 3000);
-        } else {
-            QMessageBox::critical(this, "Errore", 
-                                 "Errore durante la configurazione dell'operatore:\n" + m_database->lastError());
+    // Carica i dati correnti
+    Database::OperatorData operatorData = m_database->getOperatorData();
+    SettingsDialog::OperatorData dialogOperatorData;
+    dialogOperatorData.callsign = operatorData.callsign;
+    dialogOperatorData.firstName = operatorData.firstName;
+    dialogOperatorData.lastName = operatorData.lastName;
+    dialogOperatorData.locator = operatorData.locator;
+    settingsDialog.setOperatorData(dialogOperatorData);
+    
+    Database::ApiCredentials apiCredentials = m_database->getApiCredentials();
+    SettingsDialog::ApiCredentials dialogApiCredentials;
+    dialogApiCredentials.enableQrz = apiCredentials.enableQrz;
+    dialogApiCredentials.enableClublog = apiCredentials.enableClublog;
+    dialogApiCredentials.qrzUsername = apiCredentials.qrzUsername;
+    dialogApiCredentials.qrzPassword = apiCredentials.qrzPassword;
+    dialogApiCredentials.clublogApiKey = apiCredentials.clublogApiKey;
+    settingsDialog.setApiCredentials(dialogApiCredentials);
+    
+    if (settingsDialog.exec() == QDialog::Accepted) {
+        // Salva i dati dell'operatore
+        SettingsDialog::OperatorData newOperatorData = settingsDialog.getOperatorData();
+        if (!m_database->setOperatorData(newOperatorData.callsign, newOperatorData.firstName,
+                                       newOperatorData.lastName, newOperatorData.locator)) {
+            QMessageBox::warning(this, "Avviso", 
+                                "Impossibile salvare i dati dell'operatore. Errore: " + m_database->lastError());
         }
+        
+        // Salva le credenziali API
+        SettingsDialog::ApiCredentials newApiCredentials = settingsDialog.getApiCredentials();
+        if (!m_database->setApiCredentials(newApiCredentials.qrzUsername, newApiCredentials.qrzPassword,
+                                         newApiCredentials.clublogApiKey, newApiCredentials.enableQrz,
+                                         newApiCredentials.enableClublog)) {
+            QMessageBox::warning(this, "Avviso", 
+                                "Impossibile salvare le credenziali API. Errore: " + m_database->lastError());
+        }
+        
+        // Ricarica la configurazione API
+        configureApiService();
+        
+        // Aggiorna l'interfaccia
+        updateContactsTable();
+        
+        statusBar()->showMessage("Impostazioni salvate con successo", 3000);
     }
 }
 

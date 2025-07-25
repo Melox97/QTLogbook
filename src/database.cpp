@@ -475,6 +475,18 @@ QStringList Database::getUniqueDXCC() const
     return dxcc;
 }
 
+bool Database::clearAllSettings()
+{
+    QSqlQuery query(m_db);
+    
+    if (!query.exec("DELETE FROM settings")) {
+        m_lastError = "Errore durante il reset delle impostazioni: " + query.lastError().text();
+        return false;
+    }
+    
+    return true;
+}
+
 QString Database::lastError() const
 {
     return m_lastError;

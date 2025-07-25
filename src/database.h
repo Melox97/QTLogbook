@@ -58,6 +58,9 @@ public:
     QStringList getUniqueModes() const;
     QStringList getUniqueDXCC() const;
     
+    // Settings management
+    bool clearAllSettings();
+    
     QString lastError() const;
     
 private:
