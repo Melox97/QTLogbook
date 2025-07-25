@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_addButton, &QPushButton::clicked, this, &MainWindow::onAddContact);
     connect(m_clearButton, &QPushButton::clicked, this, &MainWindow::onClearForm);
     connect(m_callsignEdit, &QLineEdit::textChanged, this, &MainWindow::onCallsignChanged);
+    connect(m_modeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::onModeChanged);
     connect(m_apiService, &ApiService::callsignLookupFinished, this, &MainWindow::onCallsignLookupFinished);
     connect(m_apiService, &ApiService::callsignLookupError, this, &MainWindow::onCallsignLookupError);
     
@@ -323,6 +324,29 @@ void MainWindow::onCallsignLookupError(const QString &callsign, const QString &e
     qDebug() << "Errore lookup nominativo:" << error;
 }
 
+void MainWindow::onModeChanged()
+{
+    QString currentMode = m_modeCombo->currentText();
+    
+    // Pre-valorizza RST in base al modo di modulazione
+    // 59 per modi vocali (SSB, AM, FM, USB, LSB)
+    // 599 per modi digitali e CW (RTTY, CW, PSK31, FT8, ecc.)
+    if (currentMode == "SSB" || currentMode == "AM" || currentMode == "FM" || 
+        currentMode == "USB" || currentMode == "LSB") {
+        // Modi vocali: RST a 2 cifre (59)
+        m_rstSentEdit->setText("59");
+        m_rstReceivedEdit->setText("59");
+        m_rstSentEdit->setPlaceholderText("59");
+        m_rstReceivedEdit->setPlaceholderText("59");
+    } else {
+        // Modi digitali e CW: RST a 3 cifre (599)
+        m_rstSentEdit->setText("599");
+        m_rstReceivedEdit->setText("599");
+        m_rstSentEdit->setPlaceholderText("599");
+        m_rstReceivedEdit->setPlaceholderText("599");
+    }
+}
+
 void MainWindow::updateDateTime()
 {
     QDateTime utc = QDateTime::currentDateTimeUtc();
@@ -392,10 +416,12 @@ void MainWindow::onSettings()
 void MainWindow::clearForm()
 {
     m_callsignEdit->clear();
-    m_rstSentEdit->setText("599");
-    m_rstReceivedEdit->setText("599");
     m_dxccEdit->clear();
     m_locatorEdit->clear();
+    
+    // Imposta i valori RST in base al modo corrente
+    onModeChanged();
+    
     m_callsignEdit->setFocus();
 }
 

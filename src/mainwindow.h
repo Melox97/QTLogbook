@@ -33,6 +33,7 @@ private slots:
     void onClearForm();
     void onCallsignTextEdited(const QString &text);
     void onCallsignChanged();
+    void onModeChanged();
     void onCallsignLookupFinished(const QString &callsign, const QString &dxcc, const QString &locator);
     void onCallsignLookupError(const QString &callsign, const QString &error);
     void updateDateTime();
