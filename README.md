@@ -1,6 +1,51 @@
 # QT Logbook - Logbook Radioamatoriale
 
-Un'applicazione multipiattaforma sviluppata in Qt6 per la gestione di un logbook radioamatoriale con database SQLite3.
+[![Version](https://img.shields.io/badge/version-0.0.1--alpha-blue.svg)](https://github.com/username/QTLogbook/releases)
+[![Qt](https://img.shields.io/badge/Qt-6.0+-green.svg)](https://www.qt.io/)
+[![License](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)](#)
+
+Un'applicazione multipiattaforma moderna sviluppata in Qt6 per la gestione completa di un logbook radioamatoriale con database SQLite3, integrazione API e supporto accessibilità.
+
+## 🚀 Caratteristiche Principali
+
+- ✅ **Gestione Contatti Completa**: Aggiungi, modifica, cerca e filtra contatti radioamatoriali
+- 🔄 **Pre-valorizzazione RST Intelligente**: Automatica in base al modo (59 per fonia, 599 per digitale/CW)
+- 🌐 **Integrazione API**: QRZ.com e Clublog.org per lookup automatico DXCC/locatore
+- 🔤 **Conversione Automatica**: Nominativi sempre in maiuscolo
+- 📍 **Validazione Locatore**: Supporto formati Maidenhead 4 e 6 caratteri
+- ⚙️ **Impostazioni Avanzate**: Sistema completo con reset sicuro
+- ♿ **Accessibilità Completa**: Supporto screen reader e navigazione tastiera
+- 💾 **Database SQLite3**: Archiviazione sicura e affidabile
+- 🖥️ **Multipiattaforma**: Windows, macOS, Linux
+
+## 📸 Screenshot
+
+*Screenshots saranno aggiunti nella prossima versione*
+
+## 🚀 Installazione Rapida
+
+### Prerequisiti
+- Qt6 (6.0 o superiore)
+- Compilatore C++ (GCC, Clang, MSVC)
+- CMake 3.16+ o qmake
+
+### Compilazione da Sorgenti
+
+```bash
+# Clona il repository
+git clone https://github.com/username/QTLogbook.git
+cd QTLogbook
+
+# Opzione 1: Usando qmake
+qmake6 QTLogbook.pro
+make
+
+# Opzione 2: Usando CMake
+mkdir build && cd build
+cmake ..
+make
+```
 
 ## Caratteristiche
 

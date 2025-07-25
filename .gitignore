@@ -15,6 +15,8 @@ qrc_*.cpp
 ui_*.h
 *.qm
 *.prl
+.qmake.stash
+Makefile*
 
 # CMake
 CMakeCache.txt
