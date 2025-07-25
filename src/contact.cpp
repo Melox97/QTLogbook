@@ -29,10 +29,23 @@ bool Contact::isValid() const
         return false;
     }
 
-    // Validazione RST (3 cifre numeriche)
-    QRegularExpression rstRegex("^[1-5][1-9][1-9]$");
-    if (!rstRegex.match(m_rstSent).hasMatch() || !rstRegex.match(m_rstReceived).hasMatch()) {
-        return false;
+    // Validazione RST in base al modo di modulazione
+    QRegularExpression rstRegex2Digits("^[1-5][1-9]$");     // 2 cifre per modi vocali
+    QRegularExpression rstRegex3Digits("^[1-5][1-9][1-9]$"); // 3 cifre per modi digitali/CW
+    
+    bool isVoiceMode = (m_mode == "SSB" || m_mode == "AM" || m_mode == "FM" || 
+                       m_mode == "USB" || m_mode == "LSB");
+    
+    if (isVoiceMode) {
+        // Modi vocali: accetta 2 cifre (es. 59)
+        if (!rstRegex2Digits.match(m_rstSent).hasMatch() || !rstRegex2Digits.match(m_rstReceived).hasMatch()) {
+            return false;
+        }
+    } else {
+        // Modi digitali/CW: richiede 3 cifre (es. 599)
+        if (!rstRegex3Digits.match(m_rstSent).hasMatch() || !rstRegex3Digits.match(m_rstReceived).hasMatch()) {
+            return false;
+        }
     }
 
     // Validazione campi obbligatori
@@ -50,13 +63,29 @@ QString Contact::validationError() const
         return "Nominativo non valido. Deve essere di 3-10 caratteri alfanumerici.";
     }
 
-    QRegularExpression rstRegex("^[1-5][1-9][1-9]$");
-    if (!rstRegex.match(m_rstSent).hasMatch()) {
-        return "RST inviato non valido. Deve essere di 3 cifre (es. 599).";
-    }
+    // Validazione RST in base al modo di modulazione
+    QRegularExpression rstRegex2Digits("^[1-5][1-9]$");     // 2 cifre per modi vocali
+    QRegularExpression rstRegex3Digits("^[1-5][1-9][1-9]$"); // 3 cifre per modi digitali/CW
     
-    if (!rstRegex.match(m_rstReceived).hasMatch()) {
-        return "RST ricevuto non valido. Deve essere di 3 cifre (es. 599).";
+    bool isVoiceMode = (m_mode == "SSB" || m_mode == "AM" || m_mode == "FM" || 
+                       m_mode == "USB" || m_mode == "LSB");
+    
+    if (isVoiceMode) {
+        // Modi vocali: 2 cifre
+        if (!rstRegex2Digits.match(m_rstSent).hasMatch()) {
+            return "RST inviato non valido per modo vocale. Deve essere di 2 cifre (es. 59).";
+        }
+        if (!rstRegex2Digits.match(m_rstReceived).hasMatch()) {
+            return "RST ricevuto non valido per modo vocale. Deve essere di 2 cifre (es. 59).";
+        }
+    } else {
+        // Modi digitali/CW: 3 cifre
+        if (!rstRegex3Digits.match(m_rstSent).hasMatch()) {
+            return "RST inviato non valido per modo digitale/CW. Deve essere di 3 cifre (es. 599).";
+        }
+        if (!rstRegex3Digits.match(m_rstReceived).hasMatch()) {
+            return "RST ricevuto non valido per modo digitale/CW. Deve essere di 3 cifre (es. 599).";
+        }
     }
 
     if (m_band.isEmpty()) {
