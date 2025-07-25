@@ -2,6 +2,7 @@
 build/
 build-*/
 *.build/
+executable/
 
 # Qt generated files
 *.pro.user
