@@ -3,6 +3,7 @@ build/
 build-*/
 *.build/
 executable/
+Releases/
 
 # Qt generated files
 *.pro.user
