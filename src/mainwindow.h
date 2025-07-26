@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGridLayout>
@@ -15,10 +16,16 @@
 #include <QAction>
 #include <QMessageBox>
 #include <QTimer>
+#include <QDateTimeEdit>
+#include <QEvent>
+#include <QFocusEvent>
+#include <QString>
+#include <QApplication>
 #include "contact.h"
 #include "database.h"
 #include "apiservice.h"
 #include "logbookmodel.h"
+#include "adifhandler.h"
 
 class MainWindow : public QMainWindow
 {
@@ -39,6 +46,13 @@ private slots:
     void updateDateTime();
     void onAbout();
     void onSettings();
+    void onImportADIF();
+    void onExportADIF();
+
+protected:
+    void changeEvent(QEvent *event) override;
+    void focusInEvent(QFocusEvent *event) override;
+    void focusOutEvent(QFocusEvent *event) override;
 
 private:
     void setupUI();
@@ -50,6 +64,8 @@ private:
     void showValidationError(const QString &message);
     void updateContactsTable();
     void configureApiService();
+    void pauseTimerForAccessibility();
+    void resumeTimerForAccessibility();
     
     // UI Components
     QWidget *m_centralWidget;
@@ -96,6 +112,8 @@ private:
     QAction *m_exitAction;
     QAction *m_aboutAction;
     QAction *m_settingsAction;
+    QAction *m_importADIFAction;
+    QAction *m_exportADIFAction;
 };
 
 #endif // MAINWINDOW_H

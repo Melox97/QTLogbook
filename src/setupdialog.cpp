@@ -82,11 +82,10 @@ void SetupDialog::setupOperatorTab()
     m_callsignLabel = new QLabel("Nominativo *:");
     m_callsignEdit = new QLineEdit();
     m_callsignEdit->setPlaceholderText("Es: IZ0ABC");
-    m_callsignEdit->setAccessibleName("Campo nominativo radioamatoriale obbligatorio");
+    m_callsignEdit->setAccessibleName("<span lang=\"it\">Campo nominativo radioamatoriale obbligatorio</span>");
     
-    // Validatore per nominativo
-    QRegularExpression callsignRegex("^[A-Z0-9]{1,10}$");
-    m_callsignEdit->setValidator(new QRegularExpressionValidator(callsignRegex, this));
+    // Rimuovo il validatore restrittivo per permettere l'inserimento di lettere
+    // La validazione completa avverrà al momento del salvataggio
     
     // Connetti il segnale per convertire automaticamente in maiuscolo
     connect(m_callsignEdit, &QLineEdit::textEdited, this, &SetupDialog::onCallsignTextEdited);
@@ -98,7 +97,7 @@ void SetupDialog::setupOperatorTab()
     m_firstNameLabel = new QLabel("Nome:");
     m_firstNameEdit = new QLineEdit();
     m_firstNameEdit->setPlaceholderText("Es: Mario");
-    m_firstNameEdit->setAccessibleName("Campo nome dell'operatore");
+    m_firstNameEdit->setAccessibleName("<span lang=\"it\">Campo nome dell'operatore</span>");
     
     m_operatorLayout->addWidget(m_firstNameLabel, 1, 0);
     m_operatorLayout->addWidget(m_firstNameEdit, 1, 1);
@@ -107,7 +106,7 @@ void SetupDialog::setupOperatorTab()
     m_lastNameLabel = new QLabel("Cognome:");
     m_lastNameEdit = new QLineEdit();
     m_lastNameEdit->setPlaceholderText("Es: Rossi");
-    m_lastNameEdit->setAccessibleName("Campo cognome dell'operatore");
+    m_lastNameEdit->setAccessibleName("<span lang=\"it\">Campo cognome dell'operatore</span>");
     
     m_operatorLayout->addWidget(m_lastNameLabel, 2, 0);
     m_operatorLayout->addWidget(m_lastNameEdit, 2, 1);
@@ -116,7 +115,7 @@ void SetupDialog::setupOperatorTab()
     m_locatorLabel = new QLabel("Locatore:");
     m_locatorEdit = new QLineEdit();
     m_locatorEdit->setPlaceholderText("Es: JN45 o JN45AB");
-    m_locatorEdit->setAccessibleName("Campo locatore Maidenhead");
+    m_locatorEdit->setAccessibleName("<span lang=\"it\">Campo locatore Maidenhead</span>");
     
     // Validatore per locatore (4 o 6 caratteri)
     QRegularExpression locatorRegex("^[A-R]{2}[0-9]{2}([A-X]{2})?$");
@@ -143,13 +142,13 @@ void SetupDialog::setupApiTab()
     m_qrzLayout = new QGridLayout(m_qrzGroup);
     
     m_enableQrzCheck = new QCheckBox("Abilita integrazione QRZ.com");
-    m_enableQrzCheck->setAccessibleName("Checkbox per abilitare l'integrazione con QRZ.com");
+    m_enableQrzCheck->setAccessibleName("<span lang=\"it\">Checkbox per abilitare l'integrazione con QRZ.com</span>");
     m_qrzLayout->addWidget(m_enableQrzCheck, 0, 0, 1, 3);
     
     m_qrzUsernameLabel = new QLabel("Username:");
     m_qrzUsernameEdit = new QLineEdit();
     m_qrzUsernameEdit->setPlaceholderText("Il tuo username QRZ.com");
-    m_qrzUsernameEdit->setAccessibleName("Campo username per QRZ.com");
+    m_qrzUsernameEdit->setAccessibleName("<span lang=\"it\">Campo username per QRZ.com</span>");
     
     m_qrzLayout->addWidget(m_qrzUsernameLabel, 1, 0);
     m_qrzLayout->addWidget(m_qrzUsernameEdit, 1, 1);
@@ -158,15 +157,15 @@ void SetupDialog::setupApiTab()
     m_qrzPasswordEdit = new QLineEdit();
     m_qrzPasswordEdit->setEchoMode(QLineEdit::Password);
     m_qrzPasswordEdit->setPlaceholderText("La tua password QRZ.com");
-    m_qrzPasswordEdit->setAccessibleName("Campo password per QRZ.com");
+    m_qrzPasswordEdit->setAccessibleName("<span lang=\"it\">Campo password per QRZ.com</span>");
     
     m_qrzLayout->addWidget(m_qrzPasswordLabel, 2, 0);
     m_qrzLayout->addWidget(m_qrzPasswordEdit, 2, 1);
     
     m_testQrzButton = new QPushButton("Test Connessione");
-    m_testQrzButton->setAccessibleName("Pulsante per testare la connessione a QRZ.com");
+    m_testQrzButton->setAccessibleName("<span lang=\"it\">Pulsante per testare la connessione a QRZ.com</span>");
     m_helpQrzButton = new QPushButton("Aiuto");
-    m_helpQrzButton->setAccessibleName("Pulsante per aprire l'aiuto su QRZ.com");
+    m_helpQrzButton->setAccessibleName("<span lang=\"it\">Pulsante per aprire l'aiuto su QRZ.com</span>");
     
     QHBoxLayout *qrzButtonLayout = new QHBoxLayout();
     qrzButtonLayout->addWidget(m_testQrzButton);
@@ -186,21 +185,21 @@ void SetupDialog::setupApiTab()
     m_clublogLayout = new QGridLayout(m_clublogGroup);
     
     m_enableClublogCheck = new QCheckBox("Abilita integrazione Clublog.org");
-    m_enableClublogCheck->setAccessibleName("Checkbox per abilitare l'integrazione con Clublog.org");
+    m_enableClublogCheck->setAccessibleName("<span lang=\"it\">Checkbox per abilitare l'integrazione con Clublog.org</span>");
     m_clublogLayout->addWidget(m_enableClublogCheck, 0, 0, 1, 3);
     
     m_clublogApiKeyLabel = new QLabel("API Key:");
     m_clublogApiKeyEdit = new QLineEdit();
     m_clublogApiKeyEdit->setPlaceholderText("La tua API key di Clublog.org");
-    m_clublogApiKeyEdit->setAccessibleName("Campo API key per Clublog.org");
+    m_clublogApiKeyEdit->setAccessibleName("<span lang=\"it\">Campo API key per Clublog.org</span>");
     
     m_clublogLayout->addWidget(m_clublogApiKeyLabel, 1, 0);
     m_clublogLayout->addWidget(m_clublogApiKeyEdit, 1, 1);
     
     m_testClublogButton = new QPushButton("Test Connessione");
-    m_testClublogButton->setAccessibleName("Pulsante per testare la connessione a Clublog.org");
+    m_testClublogButton->setAccessibleName("<span lang=\"it\">Pulsante per testare la connessione a Clublog.org</span>");
     m_helpClublogButton = new QPushButton("Aiuto");
-    m_helpClublogButton->setAccessibleName("Pulsante per aprire l'aiuto su Clublog.org");
+    m_helpClublogButton->setAccessibleName("<span lang=\"it\">Pulsante per aprire l'aiuto su Clublog.org</span>");
     
     QHBoxLayout *clublogButtonLayout = new QHBoxLayout();
     clublogButtonLayout->addWidget(m_testClublogButton);

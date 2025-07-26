@@ -487,6 +487,18 @@ bool Database::clearAllSettings()
     return true;
 }
 
+bool Database::clearAllContacts()
+{
+    QSqlQuery query(m_db);
+    
+    if (!query.exec("DELETE FROM contacts")) {
+        m_lastError = "Errore durante la cancellazione dei contatti: " + query.lastError().text();
+        return false;
+    }
+    
+    return true;
+}
+
 QString Database::lastError() const
 {
     return m_lastError;

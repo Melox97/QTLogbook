@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include <QTranslator>
 #include <QLocale>
+#include <QLibraryInfo>
 #include <QDialog>
 #include "mainwindow.h"
 #include "database.h"
@@ -22,6 +23,37 @@ int main(int argc, char *argv[])
     // Abilita accessibilità
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
     app.setAttribute(Qt::AA_EnableHighDpiScaling);
+    
+    // Configura localizzazione italiana per VoiceOver
+    QLocale::setDefault(QLocale(QLocale::Italian, QLocale::Italy));
+    
+    // Imposta la lingua dell'applicazione per l'accessibilità
+    QTranslator translator;
+    QString locale = QLocale::system().name();
+    
+    // Forza l'uso dell'italiano se il sistema non è già configurato
+    if (!locale.startsWith("it")) {
+        locale = "it_IT";
+    }
+    
+    // Carica le traduzioni Qt standard in italiano (se disponibili)
+    QTranslator qtTranslator;
+    if (qtTranslator.load("qt_" + locale, QLibraryInfo::path(QLibraryInfo::TranslationsPath))) {
+        app.installTranslator(&qtTranslator);
+    }
+    
+    // Imposta attributi di accessibilità per VoiceOver
+    app.setProperty("AA_MacDontSwapCtrlAndMeta", true);
+    
+    // Configura la lingua per i servizi di accessibilità
+    QLocale italianLocale(QLocale::Italian, QLocale::Italy);
+    QLocale::setDefault(italianLocale);
+    
+    // Imposta variabili d'ambiente per VoiceOver (macOS)
+#ifdef Q_OS_MACOS
+    qputenv("LANG", "it_IT.UTF-8");
+    qputenv("LC_ALL", "it_IT.UTF-8");
+#endif
     
     // Inizializza il database
     Database *db = Database::instance();

@@ -18,6 +18,8 @@ set(SOURCES
     src/mainwindow.cpp
     src/logbookmodel.cpp
     src/setupdialog.cpp
+    src/settingsdialog.cpp
+    src/adifhandler.cpp
 )
 
 set(HEADERS
@@ -27,6 +29,8 @@ set(HEADERS
     src/mainwindow.h
     src/logbookmodel.h
     src/setupdialog.h
+    src/settingsdialog.h
+    src/adifhandler.h
 )
 
 set(UI_FILES
@@ -46,19 +50,11 @@ qt_add_resources(QTLogbook "resources"
         data/modes.json
 )
 
-target_link_libraries(QTLogbook
+target_link_libraries(QTLogbook PRIVATE
     Qt6::Core
     Qt6::Widgets
     Qt6::Sql
     Qt6::Network
 )
-
-# Enable accessibility
-if(WIN32)
-    target_link_libraries(QTLogbook Qt6::WinExtras)
-elseif(APPLE)
-    find_library(ACCESSIBILITY_FRAMEWORK Accessibility)
-    target_link_libraries(QTLogbook ${ACCESSIBILITY_FRAMEWORK})
-endif()
 
 qt_finalize_executable(QTLogbook)

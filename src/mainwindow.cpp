@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "settingsdialog.h"
+#include "adifhandler.h"
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
@@ -12,6 +13,7 @@
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QInputDialog>
+#include <QtWidgets/QFileDialog>
 #include <QtCore/QTimer>
 #include <QtCore/QDateTime>
 #include <QtCore/QJsonDocument>
@@ -43,8 +45,9 @@ MainWindow::MainWindow(QWidget *parent)
     configureApiService();
     connect(m_dateTimeTimer, &QTimer::timeout, this, &MainWindow::updateDateTime);
     
-    // Avvia il timer per aggiornare data/ora
-    m_dateTimeTimer->start(1000);
+    // Avvia il timer per aggiornare data/ora ogni minuto invece di ogni secondo
+    // per ridurre l'interferenza con VoiceOver
+    m_dateTimeTimer->start(60000); // 60 secondi invece di 1 secondo
     updateDateTime();
     
     // Verifica se l'operatore è configurato
@@ -58,6 +61,10 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    // Ferma il timer quando l'applicazione viene chiusa
+    if (m_dateTimeTimer && m_dateTimeTimer->isActive()) {
+        m_dateTimeTimer->stop();
+    }
 }
 
 void MainWindow::setupUI()
@@ -74,7 +81,7 @@ void MainWindow::setupUI()
     m_dateTimeLabel = new QLabel("Data/Ora UTC:");
     m_dateTimeEdit = new QLineEdit();
     m_dateTimeEdit->setReadOnly(true);
-    m_dateTimeEdit->setAccessibleName("Campo data e ora UTC, sola lettura");
+    m_dateTimeEdit->setAccessibleName("<span lang=\"it\">Campo data e ora UTC, sola lettura</span>");
     m_formLayout->addWidget(m_dateTimeLabel, 0, 0);
     m_formLayout->addWidget(m_dateTimeEdit, 0, 1);
     
@@ -82,8 +89,8 @@ void MainWindow::setupUI()
     m_callsignLabel = new QLabel("Nominativo:");
     m_callsignEdit = new QLineEdit();
     m_callsignEdit->setPlaceholderText("Es: IZ0ABC");
-    m_callsignEdit->setAccessibleName("Campo nominativo radioamatoriale");
-    m_callsignEdit->setAccessibleDescription("Inserire il nominativo della stazione contattata");
+    m_callsignEdit->setAccessibleName("<span lang=\"it\">Campo nominativo radioamatoriale</span>");
+    m_callsignEdit->setAccessibleDescription("<span lang=\"it\">Inserire il nominativo della stazione contattata</span>");
     
     // Connetti il segnale per convertire automaticamente in maiuscolo
     connect(m_callsignEdit, &QLineEdit::textEdited, this, &MainWindow::onCallsignTextEdited);
@@ -94,14 +101,14 @@ void MainWindow::setupUI()
     // Banda
     m_bandLabel = new QLabel("Banda:");
     m_bandCombo = new QComboBox();
-    m_bandCombo->setAccessibleName("Selezione banda di frequenza");
+    m_bandCombo->setAccessibleName("<span lang=\"it\">Selezione banda di frequenza</span>");
     m_formLayout->addWidget(m_bandLabel, 2, 0);
     m_formLayout->addWidget(m_bandCombo, 2, 1);
     
     // Modo
     m_modeLabel = new QLabel("Modo:");
     m_modeCombo = new QComboBox();
-    m_modeCombo->setAccessibleName("Selezione modo di trasmissione");
+    m_modeCombo->setAccessibleName("<span lang=\"it\">Selezione modo di trasmissione</span>");
     m_formLayout->addWidget(m_modeLabel, 3, 0);
     m_formLayout->addWidget(m_modeCombo, 3, 1);
     
@@ -110,8 +117,8 @@ void MainWindow::setupUI()
     m_rstSentEdit = new QLineEdit();
     m_rstSentEdit->setPlaceholderText("599");
     m_rstSentEdit->setMaxLength(3);
-    m_rstSentEdit->setAccessibleName("Campo RST inviato");
-    m_rstSentEdit->setAccessibleDescription("Rapporto RST inviato, 3 cifre");
+    m_rstSentEdit->setAccessibleName("<span lang=\"it\">Campo RST inviato</span>");
+    m_rstSentEdit->setAccessibleDescription("<span lang=\"it\">Rapporto RST inviato, 3 cifre</span>");
     m_formLayout->addWidget(m_rstSentLabel, 4, 0);
     m_formLayout->addWidget(m_rstSentEdit, 4, 1);
     
@@ -120,8 +127,8 @@ void MainWindow::setupUI()
     m_rstReceivedEdit = new QLineEdit();
     m_rstReceivedEdit->setPlaceholderText("599");
     m_rstReceivedEdit->setMaxLength(3);
-    m_rstReceivedEdit->setAccessibleName("Campo RST ricevuto");
-    m_rstReceivedEdit->setAccessibleDescription("Rapporto RST ricevuto, 3 cifre");
+    m_rstReceivedEdit->setAccessibleName("<span lang=\"it\">Campo RST ricevuto</span>");
+    m_rstReceivedEdit->setAccessibleDescription("<span lang=\"it\">Rapporto RST ricevuto, 3 cifre</span>");
     m_formLayout->addWidget(m_rstReceivedLabel, 5, 0);
     m_formLayout->addWidget(m_rstReceivedEdit, 5, 1);
     
@@ -129,7 +136,7 @@ void MainWindow::setupUI()
     m_dxccLabel = new QLabel("DXCC:");
     m_dxccEdit = new QLineEdit();
     m_dxccEdit->setReadOnly(true);
-    m_dxccEdit->setAccessibleName("Campo DXCC, determinato automaticamente");
+    m_dxccEdit->setAccessibleName("<span lang=\"it\">Campo DXCC, determinato automaticamente</span>");
     m_formLayout->addWidget(m_dxccLabel, 6, 0);
     m_formLayout->addWidget(m_dxccEdit, 6, 1);
     
@@ -137,7 +144,7 @@ void MainWindow::setupUI()
     m_locatorLabel = new QLabel("Locatore:");
     m_locatorEdit = new QLineEdit();
     m_locatorEdit->setReadOnly(true);
-    m_locatorEdit->setAccessibleName("Campo locatore, determinato automaticamente");
+    m_locatorEdit->setAccessibleName("<span lang=\"it\">Campo locatore, determinato automaticamente</span>");
     m_formLayout->addWidget(m_locatorLabel, 7, 0);
     m_formLayout->addWidget(m_locatorEdit, 7, 1);
     
@@ -145,7 +152,7 @@ void MainWindow::setupUI()
     m_operatorLabel = new QLabel("Operatore:");
     m_operatorEdit = new QLineEdit();
     m_operatorEdit->setReadOnly(true);
-    m_operatorEdit->setAccessibleName("Campo operatore, configurato nelle impostazioni");
+    m_operatorEdit->setAccessibleName("<span lang=\"it\">Campo operatore, configurato nelle impostazioni</span>");
     m_formLayout->addWidget(m_operatorLabel, 8, 0);
     m_formLayout->addWidget(m_operatorEdit, 8, 1);
     
@@ -154,9 +161,9 @@ void MainWindow::setupUI()
     // Pulsanti
     m_buttonLayout = new QHBoxLayout();
     m_addButton = new QPushButton("Aggiungi Contatto");
-    m_addButton->setAccessibleName("Pulsante per aggiungere il contatto al logbook");
+    m_addButton->setAccessibleName("<span lang=\"it\">Pulsante per aggiungere il contatto al logbook</span>");
     m_clearButton = new QPushButton("Pulisci Form");
-    m_clearButton->setAccessibleName("Pulsante per pulire tutti i campi del form");
+    m_clearButton->setAccessibleName("<span lang=\"it\">Pulsante per pulire tutti i campi del form</span>");
     
     m_buttonLayout->addWidget(m_addButton);
     m_buttonLayout->addWidget(m_clearButton);
@@ -171,7 +178,7 @@ void MainWindow::setupUI()
     m_contactsTable->setAlternatingRowColors(true);
     m_contactsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     m_contactsTable->horizontalHeader()->setStretchLastSection(true);
-    m_contactsTable->setAccessibleName("Tabella dei contatti del logbook");
+    m_contactsTable->setAccessibleName("<span lang=\"it\">Tabella dei contatti del logbook</span>");
     
     m_mainLayout->addWidget(m_contactsTable);
     
@@ -185,9 +192,22 @@ void MainWindow::setupMenuBar()
     // Menu File
     QMenu *fileMenu = menuBar()->addMenu("&File");
     
+    // Azioni ADIF
+    m_importADIFAction = new QAction("&Importa ADIF...", this);
+    m_importADIFAction->setShortcut(QKeySequence("Ctrl+I"));
+    connect(m_importADIFAction, &QAction::triggered, this, &MainWindow::onImportADIF);
+    fileMenu->addAction(m_importADIFAction);
+    
+    m_exportADIFAction = new QAction("&Esporta ADIF...", this);
+    m_exportADIFAction->setShortcut(QKeySequence("Ctrl+E"));
+    connect(m_exportADIFAction, &QAction::triggered, this, &MainWindow::onExportADIF);
+    fileMenu->addAction(m_exportADIFAction);
+    
+    fileMenu->addSeparator();
+    
     m_exitAction = new QAction("&Esci", this);
     m_exitAction->setShortcut(QKeySequence::Quit);
-    connect(m_exitAction, &QAction::triggered, this, &QWidget::close);
+    connect(m_exitAction, &QAction::triggered, qApp, &QApplication::quit);
     fileMenu->addAction(m_exitAction);
     
     // Menu Strumenti
@@ -475,4 +495,152 @@ void MainWindow::configureApiService()
     if (credentials.enableClublog && !credentials.clublogApiKey.isEmpty()) {
         m_apiService->setClublogApiKey(credentials.clublogApiKey);
     }
+}
+
+void MainWindow::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::ActivationChange) {
+        if (isActiveWindow()) {
+            resumeTimerForAccessibility();
+        } else {
+            pauseTimerForAccessibility();
+        }
+    }
+    QMainWindow::changeEvent(event);
+}
+
+void MainWindow::focusInEvent(QFocusEvent *event)
+{
+    resumeTimerForAccessibility();
+    QMainWindow::focusInEvent(event);
+}
+
+void MainWindow::focusOutEvent(QFocusEvent *event)
+{
+    pauseTimerForAccessibility();
+    QMainWindow::focusOutEvent(event);
+}
+
+void MainWindow::pauseTimerForAccessibility()
+{
+    // Ferma il timer quando l'applicazione non ha il focus
+    // per ridurre l'interferenza con VoiceOver
+    if (m_dateTimeTimer && m_dateTimeTimer->isActive()) {
+        m_dateTimeTimer->stop();
+    }
+}
+
+void MainWindow::resumeTimerForAccessibility()
+{
+    // Riavvia il timer quando l'applicazione riacquista il focus
+    if (m_dateTimeTimer && !m_dateTimeTimer->isActive()) {
+        m_dateTimeTimer->start(60000); // 60 secondi
+        updateDateTime(); // Aggiorna immediatamente
+    }
+}
+
+void MainWindow::onImportADIF()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,
+        "Importa file ADIF", "", "File ADIF (*.adi *.adif);;Tutti i file (*)");
+    
+    if (fileName.isEmpty()) {
+        return;
+    }
+    
+    ADIFHandler adifHandler;
+    
+    // Verifica che sia un file ADIF valido
+    if (!adifHandler.isValidADIFFile(fileName)) {
+        QMessageBox::warning(this, "Errore", 
+                           "Il file selezionato non sembra essere un file ADIF valido.");
+        return;
+    }
+    
+    // Ottieni tutti i contatti esistenti per il controllo duplicati
+    QList<Contact> existingContacts = m_database->getAllContacts();
+    
+    // Importa i contatti
+    ADIFHandler::ImportResult result = adifHandler.importFromFile(fileName, existingContacts);
+    
+    if (!result.success) {
+        QMessageBox::critical(this, "Errore Importazione", 
+                             "Errore durante l'importazione:\n" + result.errorMessage);
+        return;
+    }
+    
+    // Aggiungi i contatti importati al database
+    int importedCount = 0;
+    for (Contact &contact : result.importedContacts) {
+        // Imposta l'operatore corrente se non specificato
+        if (contact.operatorCall().isEmpty()) {
+            contact.setOperatorCall(m_database->getOperatorCall());
+        }
+        
+        if (m_database->addContact(contact)) {
+            importedCount++;
+        }
+    }
+    
+    // Genera report duplicati se necessario
+    if (result.duplicatesFound > 0) {
+        QString duplicateReportPath = QFileDialog::getSaveFileName(this,
+            "Salva report duplicati", "DupeImport.adi", "File ADIF (*.adi *.adif)");
+        
+        if (!duplicateReportPath.isEmpty()) {
+            adifHandler.generateDuplicateReport(duplicateReportPath, result.duplicateContacts, 
+                                               m_database->getOperatorCall());
+        }
+    }
+    
+    // Aggiorna la tabella
+    updateContactsTable();
+    
+    // Mostra risultato
+    QString message = QString("Importazione completata:\n\n")
+                     + QString("Record totali: %1\n").arg(result.totalRecords)
+                     + QString("Contatti importati: %1\n").arg(importedCount)
+                     + QString("Duplicati trovati: %1").arg(result.duplicatesFound);
+    
+    if (result.duplicatesFound > 0) {
+        message += QString("\n\nI duplicati sono stati salvati nel report DupeImport.adi");
+    }
+    
+    QMessageBox::information(this, "Importazione ADIF", message);
+}
+
+void MainWindow::onExportADIF()
+{
+    QString fileName = QFileDialog::getSaveFileName(this,
+        "Esporta file ADIF", "logbook.adi", "File ADIF (*.adi *.adif);;Tutti i file (*)");
+    
+    if (fileName.isEmpty()) {
+        return;
+    }
+    
+    // Ottieni tutti i contatti
+    QList<Contact> contacts = m_database->getAllContacts();
+    
+    if (contacts.isEmpty()) {
+        QMessageBox::information(this, "Esportazione ADIF", 
+                               "Nessun contatto da esportare.");
+        return;
+    }
+    
+    ADIFHandler adifHandler;
+    ADIFHandler::ExportResult result = adifHandler.exportToFile(fileName, contacts, 
+                                                               m_database->getOperatorCall());
+    
+    if (!result.success) {
+        QMessageBox::critical(this, "Errore Esportazione", 
+                             "Errore durante l'esportazione:\n" + result.errorMessage);
+        return;
+    }
+    
+    QString message = QString("Esportazione completata:\n\n")
+                     + QString("Contatti totali: %1\n").arg(result.totalRecords)
+                     + QString("Contatti esportati: %1\n").arg(result.successfulExports)
+                     + QString("\nFile salvato: %1").arg(fileName);
+    
+    QMessageBox::information(this, "Esportazione ADIF", message);
 }

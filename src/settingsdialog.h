@@ -1,19 +1,20 @@
 #ifndef SETTINGSDIALOG_H
 #define SETTINGSDIALOG_H
 
-#include <QDialog>
-#include <QTabWidget>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QGridLayout>
-#include <QGroupBox>
-#include <QLabel>
-#include <QLineEdit>
-#include <QCheckBox>
-#include <QPushButton>
-#include <QDialogButtonBox>
-#include <QMessageBox>
-#include <QInputDialog>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QInputDialog>
+#include <QtCore/QString>
 #include "database.h"
 
 class SettingsDialog : public QDialog
@@ -65,6 +66,7 @@ private:
     bool validateApiCredentials() const;
     bool confirmReset();
     void resetAllSettings();
+    bool createBackupBeforeReset();
     
     // UI Components
     QTabWidget *m_tabWidget;
@@ -117,6 +119,9 @@ private:
     
     // Pulsanti dialog
     QDialogButtonBox *m_buttonBox;
+    
+    // Flag per reset database
+    bool m_resetDatabase = false;
 };
 
 #endif // SETTINGSDIALOG_H

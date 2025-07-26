@@ -31,18 +31,32 @@ bool Contact::isValid() const
 
     // Validazione RST in base al modo di modulazione
     QRegularExpression rstRegex2Digits("^[1-5][1-9]$");     // 2 cifre per modi vocali
-    QRegularExpression rstRegex3Digits("^[1-5][1-9][1-9]$"); // 3 cifre per modi digitali/CW
+    QRegularExpression rstRegex3Digits("^[1-5][1-9][1-9]$"); // 3 cifre per modi digitali/CW tradizionali
+    QRegularExpression rstRegexFT("^[+-]?[0-9]{1,2}$");      // Per FT8/FT4: valori da -30 a +30
     
     bool isVoiceMode = (m_mode == "SSB" || m_mode == "AM" || m_mode == "FM" || 
                        m_mode == "USB" || m_mode == "LSB");
+    bool isFTMode = (m_mode == "FT8" || m_mode == "FT4" || m_mode == "JT65" || m_mode == "JT9" || m_mode == "MSK144");
     
     if (isVoiceMode) {
         // Modi vocali: accetta 2 cifre (es. 59)
         if (!rstRegex2Digits.match(m_rstSent).hasMatch() || !rstRegex2Digits.match(m_rstReceived).hasMatch()) {
             return false;
         }
+    } else if (isFTMode) {
+        // Modi FT/JT: accetta valori da -30 a +30 (es. -10, +15)
+        if (!rstRegexFT.match(m_rstSent).hasMatch() || !rstRegexFT.match(m_rstReceived).hasMatch()) {
+            return false;
+        }
+        // Verifica range valido per FT modes
+        bool sentOk, rcvdOk;
+        int sentValue = m_rstSent.toInt(&sentOk);
+        int rcvdValue = m_rstReceived.toInt(&rcvdOk);
+        if (!sentOk || !rcvdOk || sentValue < -30 || sentValue > 30 || rcvdValue < -30 || rcvdValue > 30) {
+            return false;
+        }
     } else {
-        // Modi digitali/CW: richiede 3 cifre (es. 599)
+        // Modi digitali/CW tradizionali: richiede 3 cifre (es. 599)
         if (!rstRegex3Digits.match(m_rstSent).hasMatch() || !rstRegex3Digits.match(m_rstReceived).hasMatch()) {
             return false;
         }
@@ -65,10 +79,12 @@ QString Contact::validationError() const
 
     // Validazione RST in base al modo di modulazione
     QRegularExpression rstRegex2Digits("^[1-5][1-9]$");     // 2 cifre per modi vocali
-    QRegularExpression rstRegex3Digits("^[1-5][1-9][1-9]$"); // 3 cifre per modi digitali/CW
+    QRegularExpression rstRegex3Digits("^[1-5][1-9][1-9]$"); // 3 cifre per modi digitali/CW tradizionali
+    QRegularExpression rstRegexFT("^[+-]?[0-9]{1,2}$");      // Per FT8/FT4: valori da -30 a +30
     
     bool isVoiceMode = (m_mode == "SSB" || m_mode == "AM" || m_mode == "FM" || 
                        m_mode == "USB" || m_mode == "LSB");
+    bool isFTMode = (m_mode == "FT8" || m_mode == "FT4" || m_mode == "JT65" || m_mode == "JT9" || m_mode == "MSK144");
     
     if (isVoiceMode) {
         // Modi vocali: 2 cifre
@@ -78,8 +94,26 @@ QString Contact::validationError() const
         if (!rstRegex2Digits.match(m_rstReceived).hasMatch()) {
             return "RST ricevuto non valido per modo vocale. Deve essere di 2 cifre (es. 59).";
         }
+    } else if (isFTMode) {
+        // Modi FT/JT: valori da -30 a +30
+        if (!rstRegexFT.match(m_rstSent).hasMatch()) {
+            return "RST inviato non valido per modo FT/JT. Deve essere un valore da -30 a +30 (es. -10).";
+        }
+        if (!rstRegexFT.match(m_rstReceived).hasMatch()) {
+            return "RST ricevuto non valido per modo FT/JT. Deve essere un valore da -30 a +30 (es. -15).";
+        }
+        // Verifica range
+        bool sentOk, rcvdOk;
+        int sentValue = m_rstSent.toInt(&sentOk);
+        int rcvdValue = m_rstReceived.toInt(&rcvdOk);
+        if (!sentOk || sentValue < -30 || sentValue > 30) {
+            return "RST inviato fuori range. Deve essere tra -30 e +30 per modi FT/JT.";
+        }
+        if (!rcvdOk || rcvdValue < -30 || rcvdValue > 30) {
+            return "RST ricevuto fuori range. Deve essere tra -30 e +30 per modi FT/JT.";
+        }
     } else {
-        // Modi digitali/CW: 3 cifre
+        // Modi digitali/CW tradizionali: 3 cifre
         if (!rstRegex3Digits.match(m_rstSent).hasMatch()) {
             return "RST inviato non valido per modo digitale/CW. Deve essere di 3 cifre (es. 599).";
         }

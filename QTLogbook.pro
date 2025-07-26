@@ -17,7 +17,8 @@ SOURCES += \
     src/apiservice.cpp \
     src/logbookmodel.cpp \
     src/setupdialog.cpp \
-    src/settingsdialog.cpp
+    src/settingsdialog.cpp \
+    src/adifhandler.cpp
 
 # File header
 HEADERS += \
@@ -27,7 +28,8 @@ HEADERS += \
     src/apiservice.h \
     src/logbookmodel.h \
     src/setupdialog.h \
-    src/settingsdialog.h
+    src/settingsdialog.h \
+    src/adifhandler.h
 
 # Risorse
 RESOURCES += resources.qrc

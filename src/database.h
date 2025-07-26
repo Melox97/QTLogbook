@@ -1,11 +1,11 @@
 #ifndef DATABASE_H
 #define DATABASE_H
 
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
-#include <QString>
-#include <QList>
+#include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlQuery>
+#include <QtSql/QSqlError>
+#include <QtCore/QString>
+#include <QtCore/QList>
 #include "contact.h"
 
 class Database
@@ -60,6 +60,7 @@ public:
     
     // Settings management
     bool clearAllSettings();
+    bool clearAllContacts();
     
     QString lastError() const;
     
