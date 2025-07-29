@@ -6,12 +6,14 @@
 #include <QtSql/QSqlError>
 #include <QtCore/QString>
 #include <QtCore/QList>
+
 #include "contact.h"
 
 class Database
 {
 public:
     static Database* instance();
+    static void destroy();
     
     bool initialize(const QString &dbPath = QString());
     bool isOpen() const;

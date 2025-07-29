@@ -4,6 +4,7 @@
 #include <QtCore/QStandardPaths>
 #include <QtCore/QDir>
 #include <QtCore/QDebug>
+#include <QScopedPointer>
 
 Database* Database::m_instance = nullptr;
 
@@ -23,6 +24,14 @@ Database* Database::instance()
         m_instance = new Database();
     }
     return m_instance;
+}
+
+void Database::destroy()
+{
+    if (m_instance) {
+        delete m_instance;
+        m_instance = nullptr;
+    }
 }
 
 bool Database::initialize(const QString &dbPath)

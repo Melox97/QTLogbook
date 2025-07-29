@@ -21,8 +21,7 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain("hamradio.local");
     
     // Abilita accessibilità
-    app.setAttribute(Qt::AA_UseHighDpiPixmaps);
-    app.setAttribute(Qt::AA_EnableHighDpiScaling);
+    QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
     
     // Configura localizzazione italiana per VoiceOver
     QLocale::setDefault(QLocale(QLocale::Italian, QLocale::Italy));
@@ -99,5 +98,7 @@ int main(int argc, char *argv[])
     MainWindow window;
     window.show();
     
-    return app.exec();
+    int result = app.exec();
+    Database::destroy();
+    return result;
 }
