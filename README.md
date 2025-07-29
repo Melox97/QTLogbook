@@ -146,7 +146,8 @@ QTLogbook/
 │   └── logbookmodel.h/cpp # Modello dati tabella
 ├── data/                   # Dati di configurazione
 │   ├── bands.json         # Definizione bande
-│   └── modes.json         # Definizione modi
+│   ├── modes.json         # Definizione modi
+│   └── rst.json           # Definizione valori RST (inclusa categoria FT per FT8/FT4)
 └── ui/                     # File interfaccia utente
     ├── mainwindow.ui      # UI principale
     └── setupdialog.ui     # Dialog configurazione

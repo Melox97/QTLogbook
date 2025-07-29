@@ -1,26 +1,34 @@
 #include "mainwindow.h"
 #include "settingsdialog.h"
+#include <QMainWindow>
+#include <QWidget>
+#include <QOverload>
+#include <QtCore/Qt>
 #include "adifhandler.h"
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QTableView>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QInputDialog>
-#include <QtWidgets/QFileDialog>
-#include <QtCore/QTimer>
-#include <QtCore/QDateTime>
-#include <QtCore/QJsonDocument>
-#include <QtCore/QJsonObject>
-#include <QtCore/QJsonArray>
-#include <QtCore/QFile>
-#include <QtCore/QDebug>
+#include <QApplication>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QComboBox>
+#include <QPushButton>
+#include <QTableView>
+#include <QHeaderView>
+#include <QMessageBox>
+#include <QInputDialog>
+#include <QFileDialog>
+#include <QTimer>
+#include <QDateTime>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QFile>
+#include <QDebug>
+#include <QMenu>
+#include <QMenuBar>
+#include <QStatusBar>
+#include <QAction>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -32,6 +40,10 @@ MainWindow::MainWindow(QWidget *parent)
     setupMenuBar();
     setupStatusBar();
     loadBandsAndModes();
+    loadRSTData();
+    
+    // Chiama onModeChanged() per inizializzare i valori RST
+    onModeChanged();
     
     // Connetti i segnali
     connect(m_addButton, &QPushButton::clicked, this, &MainWindow::onAddContact);
@@ -77,6 +89,17 @@ void MainWindow::setupUI()
     m_mainLayout->setContentsMargins(20, 20, 20, 20);
     m_mainLayout->setSpacing(15);
     
+    // Titolo principale dell'applicazione (H1)
+    QLabel *appTitleLabel = new QLabel("QT Logbook");
+    appTitleLabel->setProperty("class", "h1");
+    appTitleLabel->setAlignment(Qt::AlignCenter);
+    m_mainLayout->addWidget(appTitleLabel);
+    
+    // Titolo della sezione form (H2)
+    QLabel *formTitleLabel = new QLabel("Inserimento Contatto");
+    formTitleLabel->setProperty("class", "h2");
+    m_mainLayout->addWidget(formTitleLabel);
+    
     // Layout del form con spaziatura migliorata
     m_formLayout = new QGridLayout();
     m_formLayout->setHorizontalSpacing(12);
@@ -115,6 +138,9 @@ void MainWindow::setupUI()
     m_bandCombo = new QComboBox();
     m_bandCombo->setAccessibleName("<span lang=\"it\">Selezione banda di frequenza</span>");
     m_bandCombo->setToolTip("Seleziona la banda di frequenza utilizzata per il contatto");
+    m_bandCombo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+    m_bandCombo->setFixedWidth(80); // Larghezza fissa come per i campi RST
+    m_bandCombo->setObjectName("dropdownField");
     m_formLayout->addWidget(m_bandLabel, 2, 0);
     m_formLayout->addWidget(m_bandCombo, 2, 1);
     
@@ -124,34 +150,37 @@ void MainWindow::setupUI()
     m_modeCombo = new QComboBox();
     m_modeCombo->setAccessibleName("<span lang=\"it\">Selezione modo di trasmissione</span>");
     m_modeCombo->setToolTip("Seleziona il modo di trasmissione utilizzato per il contatto");
+    m_modeCombo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+    m_modeCombo->setFixedWidth(80); // Larghezza fissa come per i campi RST
+    m_modeCombo->setObjectName("dropdownField");
     m_formLayout->addWidget(m_modeLabel, 3, 0);
     m_formLayout->addWidget(m_modeCombo, 3, 1);
     
     // RST inviato
     m_rstSentLabel = new QLabel("RST Inviato:");
     m_rstSentLabel->setObjectName("fieldLabel");
-    m_rstSentEdit = new QLineEdit();
-    m_rstSentEdit->setPlaceholderText("599");
-    m_rstSentEdit->setMaxLength(3);
-    m_rstSentEdit->setAccessibleName("<span lang=\"it\">Campo RST inviato</span>");
-    m_rstSentEdit->setAccessibleDescription("<span lang=\"it\">Rapporto RST inviato, 3 cifre</span>");
-    m_rstSentEdit->setToolTip("Inserisci il rapporto RST inviato (es. 599)");
-    m_rstSentEdit->setFixedWidth(80); // Larghezza fissa per campo corto
+    m_rstSentCombo = new QComboBox();
+    m_rstSentCombo->addItems({"599", "5NN", "5NNN"});
+    m_rstSentCombo->setAccessibleName("<span lang=\"it\">Menu a tendina RST inviato</span>");
+    m_rstSentCombo->setAccessibleDescription("<span lang=\"it\">Seleziona rapporto RST inviato per SSB/CW/DIGI</span>");
+    m_rstSentCombo->setToolTip("Seleziona il rapporto RST inviato (599 per SSB, 5NN per CW, 5NNN per DIGI)");
+    m_rstSentCombo->setFixedWidth(80);
+    m_rstSentCombo->setObjectName("dropdownField");
     m_formLayout->addWidget(m_rstSentLabel, 4, 0);
-    m_formLayout->addWidget(m_rstSentEdit, 4, 1);
+    m_formLayout->addWidget(m_rstSentCombo, 4, 1);
     
     // RST ricevuto
     m_rstReceivedLabel = new QLabel("RST Ricevuto:");
     m_rstReceivedLabel->setObjectName("fieldLabel");
-    m_rstReceivedEdit = new QLineEdit();
-    m_rstReceivedEdit->setPlaceholderText("599");
-    m_rstReceivedEdit->setMaxLength(3);
-    m_rstReceivedEdit->setAccessibleName("<span lang=\"it\">Campo RST ricevuto</span>");
-    m_rstReceivedEdit->setAccessibleDescription("<span lang=\"it\">Rapporto RST ricevuto, 3 cifre</span>");
-    m_rstReceivedEdit->setToolTip("Inserisci il rapporto RST ricevuto (es. 599)");
-    m_rstReceivedEdit->setFixedWidth(80); // Larghezza fissa per campo corto
+    m_rstReceivedCombo = new QComboBox();
+    m_rstReceivedCombo->addItems({"599", "5NN", "5NNN"});
+    m_rstReceivedCombo->setAccessibleName("<span lang=\"it\">Menu a tendina RST ricevuto</span>");
+    m_rstReceivedCombo->setAccessibleDescription("<span lang=\"it\">Seleziona rapporto RST ricevuto per SSB/CW/DIGI</span>");
+    m_rstReceivedCombo->setToolTip("Seleziona il rapporto RST ricevuto (599 per SSB, 5NN per CW, 5NNN per DIGI)");
+    m_rstReceivedCombo->setFixedWidth(80);
+    m_rstReceivedCombo->setObjectName("dropdownField");
     m_formLayout->addWidget(m_rstReceivedLabel, 5, 0);
-    m_formLayout->addWidget(m_rstReceivedEdit, 5, 1);
+    m_formLayout->addWidget(m_rstReceivedCombo, 5, 1);
     
     // DXCC
     m_dxccLabel = new QLabel("DXCC:");
@@ -160,7 +189,7 @@ void MainWindow::setupUI()
     m_dxccEdit->setReadOnly(true);
     m_dxccEdit->setAccessibleName("<span lang=\"it\">Campo DXCC, determinato automaticamente</span>");
     m_dxccEdit->setToolTip("Entità DXCC determinata automaticamente dal nominativo");
-    m_dxccEdit->setStyleSheet("background-color: #f8f8f8;"); // Sfondo leggermente diverso per campi di sola lettura
+    m_dxccEdit->setObjectName("readOnlyField"); // Usa un nome oggetto per lo stile invece di hardcoded
     m_formLayout->addWidget(m_dxccLabel, 6, 0);
     m_formLayout->addWidget(m_dxccEdit, 6, 1);
     
@@ -171,7 +200,7 @@ void MainWindow::setupUI()
     m_locatorEdit->setReadOnly(true);
     m_locatorEdit->setAccessibleName("<span lang=\"it\">Campo locatore, determinato automaticamente</span>");
     m_locatorEdit->setToolTip("Locatore Maidenhead determinato automaticamente dal nominativo");
-    m_locatorEdit->setStyleSheet("background-color: #f8f8f8;"); // Sfondo leggermente diverso per campi di sola lettura
+    m_locatorEdit->setObjectName("readOnlyField"); // Usa un nome oggetto per lo stile invece di hardcoded
     m_formLayout->addWidget(m_locatorLabel, 7, 0);
     m_formLayout->addWidget(m_locatorEdit, 7, 1);
     
@@ -182,7 +211,7 @@ void MainWindow::setupUI()
     m_operatorEdit->setReadOnly(true);
     m_operatorEdit->setAccessibleName("<span lang=\"it\">Campo operatore, configurato nelle impostazioni</span>");
     m_operatorEdit->setToolTip("Nominativo dell'operatore configurato nelle impostazioni");
-    m_operatorEdit->setStyleSheet("background-color: #f8f8f8;"); // Sfondo leggermente diverso per campi di sola lettura
+    m_operatorEdit->setObjectName("readOnlyField"); // Usa un nome oggetto per lo stile invece di hardcoded
     m_formLayout->addWidget(m_operatorLabel, 8, 0);
     m_formLayout->addWidget(m_operatorEdit, 8, 1);
     
@@ -210,6 +239,11 @@ void MainWindow::setupUI()
     m_buttonLayout->addStretch();
     
     m_mainLayout->addLayout(m_buttonLayout);
+    
+    // Titolo della sezione tabella (H2)
+    QLabel *tableTitleLabel = new QLabel("Contatti Registrati");
+    tableTitleLabel->setProperty("class", "h2");
+    m_mainLayout->addWidget(tableTitleLabel);
     
     // Tabella contatti con stile migliorato
     m_contactsModel = new LogbookModel(this);
@@ -285,37 +319,58 @@ void MainWindow::setupStatusBar()
 
 void MainWindow::loadBandsAndModes()
 {
-    // Carica le bande dal file JSON
-    QFile bandsFile(":/data/bands.json");
-    if (bandsFile.open(QIODevice::ReadOnly)) {
-        QJsonDocument doc = QJsonDocument::fromJson(bandsFile.readAll());
-        QJsonArray bands = doc.object()["bands"].toArray();
-        
+    // Load bands from JSON file
+    QJsonDocument bandsData = loadJsonFile(":/data/bands.json");
+    if (!bandsData.isNull()) {
+        QJsonArray bands = bandsData.object()["bands"].toArray();
         for (const QJsonValue &value : bands) {
             QJsonObject band = value.toObject();
             m_bandCombo->addItem(band["name"].toString());
         }
     } else {
-        // Fallback se il file non è disponibile
+        // Fallback if file is not available
         QStringList defaultBands = {"160m", "80m", "40m", "30m", "20m", "17m", "15m", "12m", "10m", "6m", "2m", "70cm"};
         m_bandCombo->addItems(defaultBands);
     }
-    
-    // Carica i modi dal file JSON
-    QFile modesFile(":/data/modes.json");
-    if (modesFile.open(QIODevice::ReadOnly)) {
-        QJsonDocument doc = QJsonDocument::fromJson(modesFile.readAll());
-        QJsonArray modes = doc.object()["modes"].toArray();
-        
+
+    // Load modes from JSON file
+    m_modesData = loadJsonFile(":/data/modes.json");
+    if (!m_modesData.isNull()) {
+        QJsonArray modes = m_modesData.object()["modes"].toArray();
         for (const QJsonValue &value : modes) {
             QJsonObject mode = value.toObject();
             m_modeCombo->addItem(mode["name"].toString());
         }
     } else {
-        // Fallback se il file non è disponibile
+        // Fallback if file is not available
         QStringList defaultModes = {"CW", "SSB", "FM", "FT8", "FT4", "PSK31", "RTTY", "JT65", "JT9"};
         m_modeCombo->addItems(defaultModes);
     }
+}
+
+void MainWindow::loadRSTData()
+{
+    m_rstData = loadJsonFile(":/data/rst.json");
+}
+
+QJsonDocument MainWindow::loadJsonFile(const QString &filePath)
+{
+    QFile loadFile(filePath);
+    if (!loadFile.open(QIODevice::ReadOnly))
+    {
+        qWarning("Couldn't open json file: %s", qUtf8Printable(filePath));
+        return QJsonDocument();
+    }
+
+    QByteArray allData = loadFile.readAll();
+    loadFile.close();
+
+    QJsonDocument jsonDoc(QJsonDocument::fromJson(allData));
+    if (jsonDoc.isNull())
+    {
+        qWarning("Failed to create JSON document from file: %s", qUtf8Printable(filePath));
+    }
+    return jsonDoc;
 }
 
 void MainWindow::onAddContact()
@@ -328,8 +383,8 @@ void MainWindow::onAddContact()
         m_callsignEdit->text().toUpper(),
         m_bandCombo->currentText(),
         m_modeCombo->currentText(),
-        m_rstSentEdit->text(),
-        m_rstReceivedEdit->text(),
+        m_rstSentCombo->currentText(),
+        m_rstReceivedCombo->currentText(),
         m_database->getOperatorCall()
     );
     
@@ -404,19 +459,100 @@ void MainWindow::onModeChanged()
     // Pre-valorizza RST in base al modo di modulazione
     // 59 per modi vocali (SSB, AM, FM, USB, LSB)
     // 599 per modi digitali e CW (RTTY, CW, PSK31, FT8, ecc.)
-    if (currentMode == "SSB" || currentMode == "AM" || currentMode == "FM" || 
-        currentMode == "USB" || currentMode == "LSB") {
-        // Modi vocali: RST a 2 cifre (59)
-        m_rstSentEdit->setText("59");
-        m_rstReceivedEdit->setText("59");
-        m_rstSentEdit->setPlaceholderText("59");
-        m_rstReceivedEdit->setPlaceholderText("59");
-    } else {
-        // Modi digitali e CW: RST a 3 cifre (599)
-        m_rstSentEdit->setText("599");
-        m_rstReceivedEdit->setText("599");
-        m_rstSentEdit->setPlaceholderText("599");
-        m_rstReceivedEdit->setPlaceholderText("599");
+    // Clear existing items
+    m_rstSentCombo->clear();
+    m_rstReceivedCombo->clear();
+
+    // Determine RST values based on mode category
+    QString category = "";
+
+    if (!m_modesData.isNull()) {
+        QJsonArray modes = m_modesData.object()["modes"].toArray();
+        for (const QJsonValue &value : modes) {
+            QJsonObject mode = value.toObject();
+            if (mode["name"].toString() == currentMode) {
+                category = mode["category"].toString();
+                break;
+            }
+        }
+    }
+
+    QStringList rstValues;
+    if (!m_rstData.isNull()) {
+        QJsonObject rstCategories = m_rstData.object();
+        
+        // Mappatura specifica per modo
+        if (currentMode == "CW") {
+            // CW usa valori a 3 cifre
+            QJsonObject cwRST = rstCategories["CW"].toObject();
+            for (const QString &key : cwRST.keys()) {
+                rstValues << key;
+            }
+        } else if (currentMode == "FT8" || currentMode == "FT4" || currentMode == "MSK144" || currentMode == "JT65" || currentMode == "JT9") {
+            // Modi FT8/FT4 e derivati usano valori dB (FT)
+            QJsonObject ftRST = rstCategories["FT"].toObject();
+            for (const QString &key : ftRST.keys()) {
+                rstValues << key;
+            }
+        } else if (category == "Voice" || currentMode == "AM" || currentMode == "FM" || 
+                   currentMode == "SSB" || currentMode == "USB" || currentMode == "LSB") {
+            // Modi vocali usano valori a 2 cifre (PHONE)
+            QJsonObject phoneRST = rstCategories["PHONE"].toObject();
+            for (const QString &key : phoneRST.keys()) {
+                rstValues << key;
+            }
+        } else if (category == "Digital" && currentMode != "CW") {
+            // Modi digitali (eccetto CW e FT) usano valori DIGI
+            QJsonObject digiRST = rstCategories["DIGI"].toObject();
+            for (const QString &key : digiRST.keys()) {
+                rstValues << key;
+            }
+        }
+    }
+
+    if (rstValues.isEmpty()) {
+        // Fallback if no specific RST values are found
+        rstValues << "599" << "5NN" << "5NNN";
+    }
+
+    // Ordina i valori RST in modo logico
+    rstValues.sort();
+
+    m_rstSentCombo->addItems(rstValues);
+    m_rstReceivedCombo->addItems(rstValues);
+    
+    // Imposta il valore predefinito più comune
+    if (!rstValues.isEmpty()) {
+        QString defaultValue;
+        
+        // Determina il valore predefinito in base agli standard radioamatoriali
+        if (currentMode == "FT8" || currentMode == "FT4" || currentMode == "MSK144" || currentMode == "JT65" || currentMode == "JT9") {
+            // Per FT8/FT4 e derivati, usa +00 (standard)
+            defaultValue = "+00";
+        } else if (currentMode == "CW") {
+            // Per CW, usa 599 (standard)
+            defaultValue = "599";
+        } else if (category == "Voice" || currentMode == "AM" || currentMode == "FM" || 
+                   currentMode == "SSB" || currentMode == "USB" || currentMode == "LSB") {
+            // Per modi vocali, usa 59 (standard radioamatoriale)
+            defaultValue = "59";
+        } else if (category == "Digital") {
+            // Per altri modi digitali, usa 599 (standard)
+            defaultValue = "599";
+        } else {
+            // Fallback per modi non riconosciuti
+            defaultValue = "59";
+        }
+        
+        int index = rstValues.indexOf(defaultValue);
+        if (index >= 0) {
+            m_rstSentCombo->setCurrentIndex(index);
+            m_rstReceivedCombo->setCurrentIndex(index);
+        } else {
+            // Se il valore predefinito non è disponibile, usa il primo valore
+            m_rstSentCombo->setCurrentIndex(0);
+            m_rstReceivedCombo->setCurrentIndex(0);
+        }
     }
 }
 
@@ -504,8 +640,8 @@ bool MainWindow::validateForm()
         m_callsignEdit->text(),
         m_bandCombo->currentText(),
         m_modeCombo->currentText(),
-        m_rstSentEdit->text(),
-        m_rstReceivedEdit->text(),
+        m_rstSentCombo->currentText(),
+        m_rstReceivedCombo->currentText(),
         m_database->getOperatorCall()
     );
     

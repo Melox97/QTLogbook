@@ -3,7 +3,7 @@
 # Script di build alternativo per QT Logbook usando qmake
 # Questo script dovrebbe funzionare meglio sui sistemi con Qt6 installato
 
-set -e
+set -ex
 
 echo "=== QT Logbook Build Script (qmake) ==="
 echo
@@ -35,15 +35,18 @@ echo
 # Crea directory di build
 echo "Preparazione directory di build..."
 if [ -d "build_qmake" ]; then
-    echo "Directory build_qmake esistente, pulizia..."
-    rm -rf build_qmake
+    echo "Directory build_qmake esistente, non pulita per debug..."
 fi
-mkdir build_qmake
+
 cd build_qmake
 
 echo "Generazione Makefile con qmake..."
 # Genera il Makefile
 $QMAKE_CMD ../QTLogbook.pro
+
+echo "Pulizia del progetto..."
+# Pulisce il progetto
+make clean
 
 echo "Compilazione del progetto..."
 # Compila il progetto
@@ -71,7 +74,7 @@ fi
 echo
 echo "=== Build completato con successo! ==="
 echo
-echo "Eseguibile creato in: $(pwd)"
+echo "Eseguibile creato in: $(pwd)/bin"
 echo
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -81,7 +84,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
         echo "  oppure: ./QTLogbook.app/Contents/MacOS/QTLogbook"
     else
         echo "Per eseguire l'applicazione:"
-        echo "  ./QTLogbook"
+        echo "  ./bin/QTLogbook"
     fi
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo "Per eseguire l'applicazione:"

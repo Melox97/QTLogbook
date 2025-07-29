@@ -3,28 +3,39 @@
 
 #include <QMainWindow>
 #include <QWidget>
+#include <QTimer>
+#include <QPushButton>
+#include <QLineEdit>
+#include <QComboBox>
+#include <QLabel>
+#include <QString>
+#include <QEvent>
+#include <QFocusEvent>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QFile>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QDateTime>
+#include <QDebug>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGridLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QComboBox>
-#include <QPushButton>
-#include <QTableView>
 #include <QStatusBar>
 #include <QMenuBar>
 #include <QAction>
-#include <QMessageBox>
-#include <QTimer>
-#include <QDateTimeEdit>
-#include <QEvent>
-#include <QFocusEvent>
-#include <QString>
 #include <QApplication>
-#include "contact.h"
+#include <QGuiApplication>
+#include <QScreen>
+#include <QOverload>
+#include <QTableView>
+
 #include "database.h"
 #include "apiservice.h"
+#include "contact.h"
 #include "logbookmodel.h"
+#include "settingsdialog.h"
 #include "adifhandler.h"
 
 class MainWindow : public QMainWindow
@@ -32,7 +43,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 private slots:
@@ -59,6 +70,8 @@ private:
     void setupMenuBar();
     void setupStatusBar();
     void loadBandsAndModes();
+    void loadRSTData();
+    QJsonDocument loadJsonFile(const QString &filePath);
     void clearForm();
     bool validateForm();
     void showValidationError(const QString &message);
@@ -83,9 +96,11 @@ private:
     QLabel *m_modeLabel;
     QComboBox *m_modeCombo;
     QLabel *m_rstSentLabel;
-    QLineEdit *m_rstSentEdit;
+    QComboBox *m_rstSentCombo;
     QLabel *m_rstReceivedLabel;
-    QLineEdit *m_rstReceivedEdit;
+    QComboBox *m_rstReceivedCombo;
+    QJsonDocument m_modesData;
+    QJsonDocument m_rstData;
     QLabel *m_dxccLabel;
     QLineEdit *m_dxccEdit;
     QLabel *m_locatorLabel;

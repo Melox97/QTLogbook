@@ -238,3 +238,7 @@ Per contribuire al progetto:
 3. Testare su almeno due piattaforme
 4. Assicurarsi che l'accessibilità sia mantenuta
 5. Inviare una Pull Request
+
+## File di Configurazione
+
+Il file `data/rst.json` contiene i valori RST utilizzati dall'applicazione, inclusa la categoria FT per FT8/FT4 e simili. Non è necessario modificarlo manualmente, ma può essere personalizzato per esigenze avanzate.

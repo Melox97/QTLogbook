@@ -13,8 +13,10 @@
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QInputDialog>
+#include <QtWidgets/QApplication>
 #include <QtCore/QDateTime>
 #include <QtCore/QRegularExpression>
+#include <QtCore/QFile>
 #include <QtGui/QRegularExpressionValidator>
 #include "adifhandler.h"
 
@@ -23,7 +25,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
 {
     setWindowTitle("Impostazioni - QT Logbook");
     setModal(true);
-    resize(500, 400);
+    resize(500, 450);
     
     setupUI();
     
@@ -43,6 +45,28 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     
     // Aggiorna lo stato iniziale
     updateApiStatus();
+    
+    // Imposta il tema corrente
+    Database *db = Database::instance();
+    Database::ThemeMode currentTheme = db->getThemeSettings();
+    
+    switch (currentTheme) {
+        case Database::SystemTheme:
+            m_systemThemeRadio->setChecked(true);
+            break;
+        case Database::LightTheme:
+            m_lightThemeRadio->setChecked(true);
+            break;
+        case Database::DarkTheme:
+            m_darkThemeRadio->setChecked(true);
+            break;
+        case Database::HighContrastTheme:
+            m_highContrastThemeRadio->setChecked(true);
+            break;
+        default:
+            m_systemThemeRadio->setChecked(true);
+            break;
+    }
 }
 
 bool SettingsDialog::createBackupBeforeReset()
@@ -266,6 +290,37 @@ void SettingsDialog::setupAdvancedTab()
 {
     m_advancedTab = new QWidget();
     m_advancedLayout = new QVBoxLayout(m_advancedTab);
+    
+    // Gruppo Tema
+    m_themeGroup = new QGroupBox("Tema Applicazione");
+    m_themeLayout = new QVBoxLayout(m_themeGroup);
+    
+    m_themeLabel = new QLabel("Seleziona il tema dell'applicazione:");
+    m_themeLabel->setWordWrap(true);
+    m_themeLayout->addWidget(m_themeLabel);
+    
+    // Opzioni tema
+    m_systemThemeRadio = new QRadioButton("Tema di Sistema (Automatico)");
+    m_systemThemeRadio->setAccessibleName("<span lang=\"it\">Opzione per utilizzare il tema di sistema</span>");
+    m_lightThemeRadio = new QRadioButton("Tema Chiaro");
+    m_lightThemeRadio->setAccessibleName("<span lang=\"it\">Opzione per utilizzare il tema chiaro</span>");
+    m_darkThemeRadio = new QRadioButton("Tema Scuro");
+    m_darkThemeRadio->setAccessibleName("<span lang=\"it\">Opzione per utilizzare il tema scuro</span>");
+    m_highContrastThemeRadio = new QRadioButton("Tema ad Alto Contrasto (per daltonici)");
+    m_highContrastThemeRadio->setAccessibleName("<span lang=\"it\">Opzione per utilizzare il tema ad alto contrasto per daltonici</span>");
+    
+    m_themeLayout->addWidget(m_systemThemeRadio);
+    m_themeLayout->addWidget(m_lightThemeRadio);
+    m_themeLayout->addWidget(m_darkThemeRadio);
+    m_themeLayout->addWidget(m_highContrastThemeRadio);
+    
+    // Pulsante per applicare il tema
+    m_applyThemeButton = new QPushButton("Applica Tema");
+    m_applyThemeButton->setAccessibleName("<span lang=\"it\">Pulsante per applicare il tema selezionato</span>");
+    connect(m_applyThemeButton, &QPushButton::clicked, this, &SettingsDialog::onApplyTheme);
+    m_themeLayout->addWidget(m_applyThemeButton);
+    
+    m_advancedLayout->addWidget(m_themeGroup);
     
     // Gruppo Reset
     m_resetGroup = new QGroupBox("Reset Configurazione");
@@ -651,4 +706,80 @@ void SettingsDialog::setApiCredentials(const ApiCredentials &credentials)
     m_clublogApiKeyEdit->setText(credentials.clublogApiKey);
     
     updateApiStatus();
+}
+
+Database::ThemeMode SettingsDialog::getThemeSettings() const
+{
+    if (m_systemThemeRadio->isChecked()) {
+        return Database::SystemTheme;
+    } else if (m_lightThemeRadio->isChecked()) {
+        return Database::LightTheme;
+    } else if (m_darkThemeRadio->isChecked()) {
+        return Database::DarkTheme;
+    } else if (m_highContrastThemeRadio->isChecked()) {
+        return Database::HighContrastTheme;
+    }
+    
+    // Default: usa il tema di sistema
+    return Database::SystemTheme;
+}
+
+void SettingsDialog::onApplyTheme()
+{
+    Database *db = Database::instance();
+    Database::ThemeMode themeMode = getThemeSettings();
+    
+    if (db->setThemeSettings(themeMode)) {
+        // Applica il tema immediatamente
+        QFile styleFile;
+        QString stylePath;
+        
+        switch (themeMode) {
+            case Database::LightTheme:
+                stylePath = ":/styles/light_theme.qss";
+                if (!QFile::exists(stylePath)) {
+                    stylePath = "styles/light_theme.qss";
+                }
+                break;
+                
+            case Database::DarkTheme:
+                stylePath = ":/styles/dark_theme.qss";
+                if (!QFile::exists(stylePath)) {
+                    stylePath = "styles/dark_theme.qss";
+                }
+                break;
+                
+            case Database::HighContrastTheme:
+                stylePath = ":/styles/high_contrast_theme.qss";
+                if (!QFile::exists(stylePath)) {
+                    stylePath = "styles/high_contrast_theme.qss";
+                }
+                break;
+                
+            case Database::SystemTheme:
+            default:
+                // Usa il tema di sistema (modern_style.qss)
+                stylePath = ":/styles/modern_style.qss";
+                if (!QFile::exists(stylePath)) {
+                    stylePath = "styles/modern_style.qss";
+                }
+                break;
+        }
+        
+        styleFile.setFileName(stylePath);
+        if (styleFile.open(QFile::ReadOnly | QFile::Text)) {
+            QString styleSheet = QLatin1String(styleFile.readAll());
+            qApp->setStyleSheet(styleSheet);
+            styleFile.close();
+            
+            QMessageBox::information(this, "Tema Applicato", 
+                                   "Il tema è stato applicato con successo. Alcune modifiche potrebbero richiedere il riavvio dell'applicazione per essere completamente visibili.");
+        } else {
+            QMessageBox::warning(this, "Errore Tema", 
+                                "Impossibile caricare il file di stile: " + stylePath);
+        }
+    } else {
+        QMessageBox::warning(this, "Errore Tema", 
+                            "Impossibile salvare le impostazioni del tema: " + db->lastError());
+    }
 }

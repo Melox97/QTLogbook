@@ -1,14 +1,17 @@
-#include <QApplication>
-#include <QDir>
-#include <QStandardPaths>
-#include <QMessageBox>
-#include <QTranslator>
-#include <QLocale>
-#include <QLibraryInfo>
-#include <QDialog>
-#include <QFile>
-#include <QStyle>
-#include <QStyleFactory>
+#include <QtWidgets/QApplication>
+#include <QtCore/QDir>
+#include <QtCore/QStandardPaths>
+#include <QtWidgets/QMessageBox>
+#include <QtCore/QTranslator>
+#include <QtCore/QLocale>
+#include <QtCore/QLibraryInfo>
+#include <QtWidgets/QDialog>
+#include <QtCore/QFile>
+#include <QtWidgets/QStyle>
+#include <QtWidgets/QStyleFactory>
+#include <QtCore/QProcess>
+#include <QtCore/QStringList>
+#include <QtCore/QDebug>
 #include "mainwindow.h"
 #include "database.h"
 #include "setupdialog.h"
@@ -23,26 +26,113 @@ int main(int argc, char *argv[])
     app.setOrganizationName("Ham Radio Software");
     app.setOrganizationDomain("hamradio.local");
     
-    // Applica lo stile moderno
-    QFile styleFile(":/styles/modern_style.qss");
+    // Imposta il tema di base per una migliore integrazione
+    app.setStyle(QStyleFactory::create("Fusion"));
+    
+    // Inizializza il database prima di caricare il tema
+    Database *db = Database::instance();
+    QString dbPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    QDir().mkpath(dbPath);
+    dbPath += "/logbook.db";
+    
+    if (!db->initialize(dbPath)) {
+        QMessageBox::critical(nullptr, "Errore Database", 
+                             "Impossibile inizializzare il database:\n" + db->lastError());
+        return -1;
+    }
+    
+    // Carica il tema in base alle impostazioni dell'utente
+    QFile styleFile;
+    QString stylePath;
+    Database::ThemeMode themeMode = db->getThemeSettings();
+    
+    // Rileva il tema di sistema se è selezionato il tema automatico
+    if (themeMode == Database::SystemTheme) {
+        // Controlla se il sistema sta utilizzando un tema scuro
+        bool isDarkMode = false;
+        
+#ifdef Q_OS_MACOS
+        // Su macOS, controlla il valore di AppleInterfaceStyle
+        QProcess process;
+        process.start("defaults", QStringList() << "read" << "-g" << "AppleInterfaceStyle");
+        process.waitForFinished();
+        QString output = process.readAllStandardOutput().trimmed();
+        isDarkMode = (output == "Dark");
+#endif
+        
+        // Seleziona il tema appropriato in base al tema di sistema
+        if (isDarkMode) {
+            stylePath = ":/styles/dark_theme.qss";
+            if (!QFile::exists(stylePath)) {
+                stylePath = "styles/dark_theme.qss";
+            }
+        } else {
+            stylePath = ":/styles/light_theme.qss";
+            if (!QFile::exists(stylePath)) {
+                stylePath = "styles/light_theme.qss";
+            }
+        }
+    } else {
+        // Usa il tema selezionato dall'utente
+        switch (themeMode) {
+            case Database::LightTheme:
+                stylePath = ":/styles/light_theme.qss";
+                if (!QFile::exists(stylePath)) {
+                    stylePath = "styles/light_theme.qss";
+                }
+                break;
+                
+            case Database::DarkTheme:
+                stylePath = ":/styles/dark_theme.qss";
+                if (!QFile::exists(stylePath)) {
+                    stylePath = "styles/dark_theme.qss";
+                }
+                break;
+                
+            case Database::HighContrastTheme:
+                stylePath = ":/styles/high_contrast_theme.qss";
+                if (!QFile::exists(stylePath)) {
+                    stylePath = "styles/high_contrast_theme.qss";
+                }
+                break;
+                
+            default:
+                // Fallback al tema moderno predefinito
+                stylePath = ":/styles/modern_style.qss";
+                if (!QFile::exists(stylePath)) {
+                    stylePath = "styles/modern_style.qss";
+                }
+                break;
+        }
+    }
+    
+    // Applica il tema selezionato
+    styleFile.setFileName(stylePath);
     if (styleFile.open(QFile::ReadOnly)) {
         QString styleSheet = QLatin1String(styleFile.readAll());
         app.setStyleSheet(styleSheet);
         styleFile.close();
     } else {
-        // Prova a caricare il file dalla directory locale
-        QFile localStyleFile("styles/modern_style.qss");
-        if (localStyleFile.open(QFile::ReadOnly)) {
-            QString styleSheet = QLatin1String(localStyleFile.readAll());
+        qWarning("Impossibile caricare il file di stile: %s", qPrintable(styleFile.errorString()));
+        
+        // Fallback al tema moderno predefinito
+        QFile fallbackStyleFile(":/styles/modern_style.qss");
+        if (fallbackStyleFile.open(QFile::ReadOnly)) {
+            QString styleSheet = QLatin1String(fallbackStyleFile.readAll());
             app.setStyleSheet(styleSheet);
-            localStyleFile.close();
+            fallbackStyleFile.close();
         } else {
-            qWarning("Impossibile caricare il file di stile: %s", qPrintable(styleFile.errorString()));
+            // Prova a caricare il file dalla directory locale
+            QFile localStyleFile("styles/modern_style.qss");
+            if (localStyleFile.open(QFile::ReadOnly)) {
+                QString styleSheet = QLatin1String(localStyleFile.readAll());
+                app.setStyleSheet(styleSheet);
+                localStyleFile.close();
+            } else {
+                qWarning("Impossibile caricare il file di stile di fallback: %s", qPrintable(fallbackStyleFile.errorString()));
+            }
         }
     }
-    
-    // Imposta il tema di base per una migliore integrazione
-    app.setStyle(QStyleFactory::create("Fusion"));
     
     // Abilita accessibilità
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
@@ -77,18 +167,6 @@ int main(int argc, char *argv[])
     qputenv("LANG", "it_IT.UTF-8");
     qputenv("LC_ALL", "it_IT.UTF-8");
 #endif
-    
-    // Inizializza il database
-    Database *db = Database::instance();
-    QString dbPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-    QDir().mkpath(dbPath);
-    dbPath += "/logbook.db";
-    
-    if (!db->initialize(dbPath)) {
-        QMessageBox::critical(nullptr, "Errore Database", 
-                             "Impossibile inizializzare il database:\n" + db->lastError());
-        return -1;
-    }
     
     // Verifica se è necessario configurare l'operatore
     if (db->getOperatorCall().isEmpty()) {

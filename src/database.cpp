@@ -508,6 +508,38 @@ bool Database::clearAllContacts()
     return true;
 }
 
+bool Database::setThemeSettings(ThemeMode themeMode)
+{
+    QSqlQuery query(m_db);
+    
+    query.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('theme_mode', ?)");
+    query.addBindValue(QString::number(static_cast<int>(themeMode)));
+    
+    if (!query.exec()) {
+        m_lastError = "Errore impostazione tema: " + query.lastError().text();
+        return false;
+    }
+    
+    return true;
+}
+
+Database::ThemeMode Database::getThemeSettings() const
+{
+    QSqlQuery query(m_db);
+    query.prepare("SELECT value FROM settings WHERE key = 'theme_mode'");
+    
+    if (query.exec() && query.next()) {
+        bool ok;
+        int themeValue = query.value(0).toInt(&ok);
+        if (ok && themeValue >= 0 && themeValue <= 3) {
+            return static_cast<ThemeMode>(themeValue);
+        }
+    }
+    
+    // Default: usa il tema di sistema
+    return SystemTheme;
+}
+
 QString Database::lastError() const
 {
     return m_lastError;

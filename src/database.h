@@ -54,6 +54,16 @@ public:
     };
     ApiCredentials getApiCredentials() const;
     
+    // Theme settings management
+    enum ThemeMode {
+        SystemTheme = 0,
+        LightTheme = 1,
+        DarkTheme = 2,
+        HighContrastTheme = 3
+    };
+    bool setThemeSettings(ThemeMode themeMode);
+    ThemeMode getThemeSettings() const;
+    
     // Statistics
     int getTotalContacts() const;
     QStringList getUniqueBands() const;

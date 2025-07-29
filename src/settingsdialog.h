@@ -10,6 +10,7 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QCheckBox>
+#include <QtWidgets/QRadioButton>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QMessageBox>
@@ -44,6 +45,7 @@ public:
     
     OperatorData getOperatorData() const;
     ApiCredentials getApiCredentials() const;
+    Database::ThemeMode getThemeSettings() const;
 
 private slots:
     void onCallsignTextEdited(const QString &text);
@@ -54,6 +56,7 @@ private slots:
     void onHelpQrz();
     void onHelpClublog();
     void onResetToDefaults();
+    void onApplyTheme();
     void validateAndAccept();
 
 private:
@@ -112,6 +115,18 @@ private:
     // Tab Avanzate
     QWidget *m_advancedTab;
     QVBoxLayout *m_advancedLayout;
+    
+    // Gruppo Tema
+    QGroupBox *m_themeGroup;
+    QVBoxLayout *m_themeLayout;
+    QLabel *m_themeLabel;
+    QRadioButton *m_systemThemeRadio;
+    QRadioButton *m_lightThemeRadio;
+    QRadioButton *m_darkThemeRadio;
+    QRadioButton *m_highContrastThemeRadio;
+    QPushButton *m_applyThemeButton;
+    
+    // Gruppo Reset
     QGroupBox *m_resetGroup;
     QVBoxLayout *m_resetLayout;
     QPushButton *m_resetButton;

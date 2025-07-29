@@ -1,11 +1,11 @@
-/* QTLogbook Modern Style - Stile minimale, moderno e accessibile */
+/* QTLogbook Light Theme - Stile chiaro con alto contrasto */
 
 /* Stile generale dell'applicazione */
 QWidget {
     font-family: 'Segoe UI', 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 14px; /* Dimensione base aumentata */
-    color: #333333;
-    background-color: #f8f9fa;
+    font-size: 14px;
+    color: #000000;
+    background-color: #ffffff;
 }
 
 /* Stile per la finestra principale */
@@ -17,7 +17,7 @@ QMainWindow {
 QLabel[class="h1"] {
     font-size: 22px;
     font-weight: 700;
-    color: #222222;
+    color: #000000;
     margin-bottom: 10px;
 }
 
@@ -25,39 +25,39 @@ QLabel[class="h1"] {
 QLabel[class="h2"] {
     font-size: 18px;
     font-weight: 600;
-    color: #333333;
+    color: #000000;
     margin-bottom: 8px;
 }
 
 /* Stile per i widget centrali */
 QMainWindow::central-widget {
     background-color: #ffffff;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #d0d0d0;
     border-radius: 6px;
 }
 
 /* Stile per le etichette */
 QLabel {
-    color: #505050;
+    color: #000000;
     font-weight: 500;
     padding: 2px;
-    font-size: 14px; /* Dimensione base per etichette normali */
+    font-size: 14px;
 }
 
 /* Stile per le etichette dei campi - H3 */
 QLabel#fieldLabel {
-    color: #333333;
+    color: #000000;
     font-weight: 600;
     font-size: 16px; /* H3 */
 }
 
 /* Stile per i campi di testo */
 QLineEdit {
-    border: 1px solid #d0d0d0;
+    border: 1px solid #000000;
     border-radius: 4px;
     padding: 6px;
     background-color: #ffffff;
-    selection-background-color: #0078d7;
+    selection-background-color: #0000ff;
     selection-color: #ffffff;
     font-size: 14px;
 }
@@ -66,45 +66,45 @@ QLineEdit {
 QLineEdit#callsignEdit {
     font-weight: 600;
     font-size: 16px; /* H3 */
-    color: #0078d7;
+    color: #0000ff;
 }
 
 QLineEdit:focus {
-    border: 1px solid #0078d7;
+    border: 2px solid #0000ff;
 }
 
 QLineEdit:disabled {
     background-color: #f0f0f0;
-    color: #909090;
+    color: #505050;
 }
 
 /* Stile per i campi di sola lettura */
 QLineEdit#readOnlyField {
     background-color: #f5f5f5;
-    color: #505050;
-    border: 1px solid #e0e0e0;
+    color: #000000;
+    border: 1px solid #d0d0d0;
 }
 
 /* Stile per i menu a tendina */
 QComboBox {
-    border: 1px solid #d0d0d0;
+    border: 1px solid #000000;
     border-radius: 4px;
     padding: 5px 10px;
     background-color: #ffffff;
-    selection-background-color: #0078d7;
+    selection-background-color: #0000ff;
     selection-color: #ffffff;
 }
 
 /* Stile specifico per i campi dropdown */
 QComboBox#dropdownField {
-    background-color: #f0f8ff;
-    border: 1px solid #0078d7;
+    background-color: #f0f0ff;
+    border: 1px solid #0000ff;
     min-width: 80px;
     max-width: 80px;
 }
 
 QComboBox:focus {
-    border: 1px solid #0078d7;
+    border: 2px solid #0000ff;
 }
 
 QComboBox::drop-down {
@@ -123,7 +123,7 @@ QComboBox::down-arrow {
 
 /* Stile per i pulsanti */
 QPushButton {
-    background-color: #0078d7;
+    background-color: #0000ff;
     color: #ffffff;
     border: none;
     border-radius: 4px;
@@ -134,28 +134,28 @@ QPushButton {
 }
 
 QPushButton:hover {
-    background-color: #0069c0;
+    background-color: #0000cc;
 }
 
 QPushButton:pressed {
-    background-color: #005aa9;
+    background-color: #000099;
 }
 
 QPushButton:disabled {
     background-color: #cccccc;
-    color: #909090;
+    color: #505050;
 }
 
 /* Stile per il pulsante Clear */
 QPushButton#clearButton {
     background-color: #f0f0f0;
-    color: #505050;
-    border: 1px solid #d0d0d0;
+    color: #000000;
+    border: 1px solid #000000;
 }
 
 /* Stile per il pulsante Add */
 QPushButton#addButton {
-    background-color: #0078d7;
+    background-color: #0000ff;
     color: #ffffff;
     font-weight: 600;
 }
@@ -169,42 +169,42 @@ QPushButton#clearButton:pressed {
 }
 
 QPushButton#addButton:hover {
-    background-color: #0069c0;
+    background-color: #0000cc;
 }
 
 QPushButton#addButton:pressed {
-    background-color: #005aa9;
+    background-color: #000099;
 }
 
 /* Stile per la tabella */
 QTableView {
-    border: 1px solid #e0e0e0;
+    border: 1px solid #000000;
     border-radius: 4px;
     background-color: #ffffff;
     alternate-background-color: #f5f5f5;
-    gridline-color: #e0e0e0;
+    gridline-color: #000000;
     selection-background-color: #e6f2ff;
-    selection-color: #333333;
+    selection-color: #000000;
 }
 
 QTableView::item {
     padding: 4px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #d0d0d0;
 }
 
 QTableView::item:selected {
     background-color: #e6f2ff;
-    color: #333333;
+    color: #000000;
     border: none;
 }
 
 QHeaderView::section {
     background-color: #f0f0f0;
-    color: #505050;
+    color: #000000;
     padding: 6px;
     border: none;
-    border-right: 1px solid #e0e0e0;
-    border-bottom: 1px solid #e0e0e0;
+    border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
     font-weight: 500;
     font-size: 16px; /* H3 */
 }
@@ -212,14 +212,14 @@ QHeaderView::section {
 /* Stile per la barra di stato */
 QStatusBar {
     background-color: #f8f9fa;
-    color: #505050;
-    border-top: 1px solid #e0e0e0;
+    color: #000000;
+    border-top: 1px solid #d0d0d0;
 }
 
 /* Stile per la barra dei menu */
 QMenuBar {
     background-color: #f8f9fa;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid #d0d0d0;
     font-size: 14px;
 }
 
@@ -230,13 +230,13 @@ QMenuBar::item {
 
 QMenuBar::item:selected {
     background-color: #e6f2ff;
-    color: #333333;
+    color: #000000;
 }
 
 QMenu {
     background-color: #ffffff;
     font-size: 14px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #000000;
     border-radius: 4px;
 }
 
@@ -246,25 +246,25 @@ QMenu::item {
 
 QMenu::item:selected {
     background-color: #e6f2ff;
-    color: #333333;
+    color: #000000;
 }
 
 /* Stile per i widget di data e ora */
 QDateTimeEdit {
-    border: 1px solid #d0d0d0;
+    border: 1px solid #000000;
     border-radius: 4px;
     padding: 6px;
     background-color: #ffffff;
 }
 
 QDateTimeEdit:focus {
-    border: 1px solid #0078d7;
+    border: 2px solid #0000ff;
 }
 
 /* Stile per i dialoghi */
 QDialog {
     background-color: #ffffff;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #d0d0d0;
     border-radius: 6px;
 }
 
@@ -274,14 +274,14 @@ QMessageBox {
 }
 
 QMessageBox QLabel {
-    color: #333333;
+    color: #000000;
 }
 
 /* Stile per i tooltip - importante per l'accessibilità */
 QToolTip {
     background-color: #ffffdc;
-    color: #333333;
-    border: 1px solid #e0e0e0;
+    color: #000000;
+    border: 1px solid #000000;
     border-radius: 4px;
     padding: 4px;
     font-size: 12px;
@@ -289,6 +289,6 @@ QToolTip {
 
 /* Stile per lo stato di focus - importante per l'accessibilità */
 *:focus {
-    outline: 2px solid #0078d7;
+    outline: 2px solid #0000ff;
     outline-offset: 1px;
 }

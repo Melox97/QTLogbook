@@ -49,7 +49,11 @@ qt_add_resources(QTLogbook "resources"
         data/bands.json
         data/modes.json
         styles/modern_style.qss
+        styles/light_theme.qss
+        styles/dark_theme.qss
+        styles/high_contrast_theme.qss
         styles/down_arrow.svg
+        styles/checkmark.svg
 )
 
 target_link_libraries(QTLogbook PRIVATE

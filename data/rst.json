@@ -1,0 +1,45 @@
+{
+  "PHONE": {
+    "51": "Barely readable, occasional words distinguishable",
+    "52": "Barely readable, occasional words distinguishable",
+    "53": "Readable with considerable difficulty",
+    "54": "Readable with practically no difficulty",
+    "55": "Perfectly readable",
+    "56": "Perfectly readable",
+    "57": "Perfectly readable",
+    "58": "Perfectly readable",
+    "59": "Perfectly readable"
+  },
+  "CW": {
+    "519": "Barely readable, occasional characters distinguishable",
+    "529": "Barely readable, occasional characters distinguishable",
+    "539": "Readable with considerable difficulty",
+    "549": "Readable with practically no difficulty",
+    "559": "Perfectly readable",
+    "569": "Perfectly readable",
+    "579": "Perfectly readable",
+    "589": "Perfectly readable",
+    "599": "Perfectly readable"
+  },
+  "DIGI": {
+    "529": "Barely readable, occasional characters distinguishable",
+    "539": "Readable with considerable difficulty", 
+    "549": "Readable with practically no difficulty",
+    "559": "Perfectly readable",
+    "569": "Perfectly readable",
+    "579": "Perfectly readable",
+    "589": "Perfectly readable",
+    "599": "Perfectly readable"
+  },
+  "FT": {
+    "-30": "Very weak signal",
+    "-25": "Weak signal",
+    "-20": "Weak signal",
+    "-15": "Moderate signal",
+    "-10": "Good signal",
+    "-05": "Strong signal",
+    "+00": "Very strong signal",
+    "+05": "Extremely strong signal",
+    "+10": "Extremely strong signal"
+  }
+}

@@ -2,7 +2,12 @@
     <qresource prefix="/">
         <file>data/bands.json</file>
         <file>data/modes.json</file>
+        <file>data/rst.json</file>
         <file>styles/modern_style.qss</file>
+        <file>styles/light_theme.qss</file>
+        <file>styles/dark_theme.qss</file>
+        <file>styles/high_contrast_theme.qss</file>
         <file>styles/down_arrow.svg</file>
+        <file>styles/checkmark.svg</file>
     </qresource>
 </RCC>

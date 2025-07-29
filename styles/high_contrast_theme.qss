@@ -1,0 +1,407 @@
+/* QTLogbook High Contrast Theme - Stile ad alto contrasto per daltonici */
+
+/* Stile generale dell'applicazione */
+QWidget {
+    font-family: 'Segoe UI', 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px;
+    color: #ffffff;
+    background-color: #000000;
+}
+
+/* Stile per la finestra principale */
+QMainWindow {
+    background-color: #000000;
+}
+
+/* Stile per i titoli H1 (22pt) */
+QLabel[class="h1"] {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+/* Stile per i titoli H2 (18pt) */
+QLabel[class="h2"] {
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+/* Stile per i widget centrali */
+QMainWindow::central-widget {
+    background-color: #000000;
+    border: 2px solid #ffffff;
+    border-radius: 6px;
+}
+
+/* Stile per le etichette */
+QLabel {
+    color: #ffffff;
+    font-weight: 500;
+    padding: 2px;
+    font-size: 14px;
+}
+
+/* Stile per le etichette dei campi - H3 */
+QLabel#fieldLabel {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 16px; /* H3 */
+}
+
+/* Stile per i campi di testo */
+QLineEdit {
+    border: 2px solid #ffffff;
+    border-radius: 4px;
+    padding: 6px;
+    background-color: #000000;
+    color: #ffffff;
+    selection-background-color: #ffff00;
+    selection-color: #000000;
+    font-size: 14px;
+}
+
+/* Stile specifico per il campo nominativo */
+QLineEdit#callsignEdit {
+    font-weight: 600;
+    font-size: 16px; /* H3 */
+    color: #ffff00;
+    background-color: #000000;
+}
+
+QLineEdit:focus {
+    border: 3px solid #ffff00;
+}
+
+QLineEdit:disabled {
+    background-color: #000000;
+    color: #a0a0a0;
+    border: 2px dashed #ffffff;
+}
+
+/* Stile per i campi di sola lettura */
+QLineEdit#readOnlyField {
+    background-color: #000000;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+}
+
+QLineEdit#readOnlyField:focus {
+    border: 3px solid #ffff00;
+}
+
+/* Stile per i menu a tendina */
+QComboBox {
+    border: 2px solid #ffffff;
+    border-radius: 4px;
+    padding: 5px 10px;
+    background-color: #000000;
+    color: #ffffff;
+    selection-background-color: #ffff00;
+    selection-color: #000000;
+}
+
+/* Stile specifico per i campi dropdown */
+QComboBox#dropdownField {
+    background-color: #000000;
+    border: 2px solid #ffffff;
+    min-width: 80px;
+    max-width: 80px;
+}
+
+QComboBox#dropdownField:focus {
+    border: 3px solid #ffff00;
+}
+
+QComboBox:focus {
+    border: 3px solid #ffff00;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: center right;
+    width: 20px;
+    border-left: none;
+}
+
+QComboBox::down-arrow {
+    image: url(:/styles/down_arrow.svg);
+    width: 16px;
+    height: 16px;
+    background-color: #ffff00;
+    border-radius: 2px;
+}
+
+/* Stile per i pulsanti */
+QPushButton {
+    background-color: #000000;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-weight: 500;
+    min-width: 80px;
+    font-size: 14px;
+}
+
+QPushButton:hover {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+QPushButton:pressed {
+    background-color: #ffff00;
+    color: #000000;
+}
+
+QPushButton:disabled {
+    background-color: #000000;
+    color: #a0a0a0;
+    border: 2px dashed #ffffff;
+}
+
+/* Stile per il pulsante Clear */
+QPushButton#clearButton {
+    background-color: #000000;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+}
+
+/* Stile per il pulsante Add */
+QPushButton#addButton {
+    background-color: #ffff00;
+    color: #000000;
+    font-weight: 600;
+    border: 2px solid #ffffff;
+}
+
+QPushButton#clearButton:hover {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+QPushButton#clearButton:pressed {
+    background-color: #ffff00;
+    color: #000000;
+}
+
+QPushButton#addButton:hover {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+QPushButton#addButton:pressed {
+    background-color: #ffff00;
+    color: #000000;
+}
+
+/* Stile per la tabella */
+QTableView {
+    border: 2px solid #ffffff;
+    border-radius: 4px;
+    background-color: #000000;
+    alternate-background-color: #202020;
+    gridline-color: #ffffff;
+    selection-background-color: #ffff00;
+    selection-color: #000000;
+}
+
+QTableView::item {
+    padding: 4px;
+    border-bottom: 1px solid #ffffff;
+}
+
+QTableView::item:selected {
+    background-color: #ffff00;
+    color: #000000;
+    border: none;
+}
+
+QHeaderView::section {
+    background-color: #000000;
+    color: #ffffff;
+    padding: 6px;
+    border: none;
+    border-right: 2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+    font-weight: 500;
+    font-size: 16px; /* H3 */
+}
+
+/* Stile per la barra di stato */
+QStatusBar {
+    background-color: #000000;
+    color: #ffffff;
+    border-top: 2px solid #ffffff;
+}
+
+/* Stile per la barra dei menu */
+QMenuBar {
+    background-color: #000000;
+    border-bottom: 2px solid #ffffff;
+    font-size: 14px;
+}
+
+QMenuBar::item {
+    background-color: transparent;
+    padding: 6px 10px;
+}
+
+QMenuBar::item:selected {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+QMenu {
+    background-color: #000000;
+    font-size: 14px;
+    border: 2px solid #ffffff;
+    border-radius: 4px;
+}
+
+QMenu::item {
+    padding: 6px 20px 6px 20px;
+}
+
+QMenu::item:selected {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+/* Stile per i widget di data e ora */
+QDateTimeEdit {
+    border: 2px solid #ffffff;
+    border-radius: 4px;
+    padding: 6px;
+    background-color: #000000;
+    color: #ffffff;
+}
+
+QDateTimeEdit:focus {
+    border: 3px solid #ffff00;
+}
+
+/* Stile per i dialoghi */
+QDialog {
+    background-color: #000000;
+    border: 2px solid #ffffff;
+    border-radius: 6px;
+}
+
+/* Stile per i messaggi di errore */
+QMessageBox {
+    background-color: #000000;
+}
+
+QMessageBox QLabel {
+    color: #ffffff;
+}
+
+/* Stile per i tooltip - importante per l'accessibilità */
+QToolTip {
+    background-color: #ffff00;
+    color: #000000;
+    border: 2px solid #ffffff;
+    border-radius: 4px;
+    padding: 4px;
+    font-size: 12px;
+}
+
+/* Stile per lo stato di focus - importante per l'accessibilità */
+*:focus {
+    outline: 3px solid #ffff00;
+    outline-offset: 1px;
+}
+
+/* Stile per i tab widget */
+QTabWidget::pane {
+    border: 2px solid #ffffff;
+    border-radius: 4px;
+    background-color: #000000;
+}
+
+QTabBar::tab {
+    background-color: #000000;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    border-bottom: none;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding: 8px 12px;
+    margin-right: 2px;
+}
+
+QTabBar::tab:selected {
+    background-color: #ffff00;
+    color: #000000;
+}
+
+QTabBar::tab:!selected {
+    margin-top: 2px;
+}
+
+/* Stile per i gruppi */
+QGroupBox {
+    border: 2px solid #ffffff;
+    border-radius: 6px;
+    margin-top: 20px;
+    font-weight: 600;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    left: 10px;
+    padding: 0 5px;
+    color: #ffffff;
+    background-color: #000000;
+}
+
+/* Stile per i checkbox */
+QCheckBox {
+    color: #ffffff;
+    spacing: 8px;
+}
+
+QCheckBox::indicator {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ffffff;
+    border-radius: 3px;
+    background-color: #000000;
+}
+
+QCheckBox::indicator:checked {
+    background-color: #ffff00;
+    border: 2px solid #ffffff;
+    image: url(:/styles/checkmark.svg);
+}
+
+QCheckBox::indicator:unchecked:hover {
+    border: 2px solid #ffff00;
+}
+
+/* Stile per i radio button */
+QRadioButton {
+    color: #ffffff;
+    spacing: 8px;
+}
+
+QRadioButton::indicator {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ffffff;
+    border-radius: 10px;
+    background-color: #000000;
+}
+
+QRadioButton::indicator:checked {
+    background-color: #ffff00;
+    border: 2px solid #ffffff;
+}
+
+QRadioButton::indicator:unchecked:hover {
+    border: 2px solid #ffff00;
+}
