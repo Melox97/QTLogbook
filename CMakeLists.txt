@@ -48,6 +48,8 @@ qt_add_resources(QTLogbook "resources"
     FILES
         data/bands.json
         data/modes.json
+        styles/modern_style.qss
+        styles/down_arrow.svg
 )
 
 target_link_libraries(QTLogbook PRIVATE

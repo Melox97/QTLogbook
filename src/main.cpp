@@ -6,6 +6,9 @@
 #include <QLocale>
 #include <QLibraryInfo>
 #include <QDialog>
+#include <QFile>
+#include <QStyle>
+#include <QStyleFactory>
 #include "mainwindow.h"
 #include "database.h"
 #include "setupdialog.h"
@@ -19,6 +22,27 @@ int main(int argc, char *argv[])
     app.setApplicationVersion("1.0.0");
     app.setOrganizationName("Ham Radio Software");
     app.setOrganizationDomain("hamradio.local");
+    
+    // Applica lo stile moderno
+    QFile styleFile(":/styles/modern_style.qss");
+    if (styleFile.open(QFile::ReadOnly)) {
+        QString styleSheet = QLatin1String(styleFile.readAll());
+        app.setStyleSheet(styleSheet);
+        styleFile.close();
+    } else {
+        // Prova a caricare il file dalla directory locale
+        QFile localStyleFile("styles/modern_style.qss");
+        if (localStyleFile.open(QFile::ReadOnly)) {
+            QString styleSheet = QLatin1String(localStyleFile.readAll());
+            app.setStyleSheet(styleSheet);
+            localStyleFile.close();
+        } else {
+            qWarning("Impossibile caricare il file di stile: %s", qPrintable(styleFile.errorString()));
+        }
+    }
+    
+    // Imposta il tema di base per una migliore integrazione
+    app.setStyle(QStyleFactory::create("Fusion"));
     
     // Abilita accessibilità
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);

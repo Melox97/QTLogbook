@@ -1,0 +1,256 @@
+/* QTLogbook Modern Style - Stile minimale, moderno e accessibile */
+
+/* Stile generale dell'applicazione */
+QWidget {
+    font-family: 'Segoe UI', 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px;
+    color: #333333;
+    background-color: #f8f9fa;
+}
+
+/* Stile per la finestra principale */
+QMainWindow {
+    background-color: #f8f9fa;
+}
+
+/* Stile per i widget centrali */
+QMainWindow::central-widget {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+}
+
+/* Stile per le etichette */
+QLabel {
+    color: #505050;
+    font-weight: 500;
+    padding: 2px;
+}
+
+/* Stile per le etichette dei campi */
+QLabel#fieldLabel {
+    color: #333333;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+/* Stile per i campi di testo */
+QLineEdit {
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    padding: 6px;
+    background-color: #ffffff;
+    selection-background-color: #0078d7;
+    selection-color: #ffffff;
+}
+
+/* Stile specifico per il campo nominativo */
+QLineEdit#callsignEdit {
+    font-weight: 600;
+    font-size: 14px;
+    color: #0078d7;
+}
+
+QLineEdit:focus {
+    border: 1px solid #0078d7;
+}
+
+QLineEdit:disabled {
+    background-color: #f0f0f0;
+    color: #909090;
+}
+
+/* Stile per i menu a tendina */
+QComboBox {
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    padding: 5px 10px;
+    background-color: #ffffff;
+    selection-background-color: #0078d7;
+    selection-color: #ffffff;
+}
+
+QComboBox:focus {
+    border: 1px solid #0078d7;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: center right;
+    width: 20px;
+    border-left: none;
+}
+
+QComboBox::down-arrow {
+    image: url(styles/down_arrow.svg);
+    width: 12px;
+    height: 12px;
+}
+
+/* Stile per i pulsanti */
+QPushButton {
+    background-color: #0078d7;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-weight: 500;
+    min-width: 80px;
+}
+
+QPushButton:hover {
+    background-color: #0069c0;
+}
+
+QPushButton:pressed {
+    background-color: #005aa9;
+}
+
+QPushButton:disabled {
+    background-color: #cccccc;
+    color: #909090;
+}
+
+/* Stile per il pulsante Clear */
+QPushButton#clearButton {
+    background-color: #f0f0f0;
+    color: #505050;
+    border: 1px solid #d0d0d0;
+}
+
+/* Stile per il pulsante Add */
+QPushButton#addButton {
+    background-color: #0078d7;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+QPushButton#clearButton:hover {
+    background-color: #e0e0e0;
+}
+
+QPushButton#clearButton:pressed {
+    background-color: #d0d0d0;
+}
+
+QPushButton#addButton:hover {
+    background-color: #0069c0;
+}
+
+QPushButton#addButton:pressed {
+    background-color: #005aa9;
+}
+
+/* Stile per la tabella */
+QTableView {
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background-color: #ffffff;
+    alternate-background-color: #f5f5f5;
+    gridline-color: #e0e0e0;
+    selection-background-color: #e6f2ff;
+    selection-color: #333333;
+}
+
+QTableView::item {
+    padding: 4px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+QTableView::item:selected {
+    background-color: #e6f2ff;
+    color: #333333;
+    border: none;
+}
+
+QHeaderView::section {
+    background-color: #f0f0f0;
+    color: #505050;
+    padding: 6px;
+    border: none;
+    border-right: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+    font-weight: 500;
+}
+
+/* Stile per la barra di stato */
+QStatusBar {
+    background-color: #f8f9fa;
+    color: #505050;
+    border-top: 1px solid #e0e0e0;
+}
+
+/* Stile per la barra dei menu */
+QMenuBar {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+QMenuBar::item {
+    background-color: transparent;
+    padding: 6px 10px;
+}
+
+QMenuBar::item:selected {
+    background-color: #e6f2ff;
+    color: #333333;
+}
+
+QMenu {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+}
+
+QMenu::item {
+    padding: 6px 20px 6px 20px;
+}
+
+QMenu::item:selected {
+    background-color: #e6f2ff;
+    color: #333333;
+}
+
+/* Stile per i widget di data e ora */
+QDateTimeEdit {
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    padding: 6px;
+    background-color: #ffffff;
+}
+
+QDateTimeEdit:focus {
+    border: 1px solid #0078d7;
+}
+
+/* Stile per i dialoghi */
+QDialog {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+}
+
+/* Stile per i messaggi di errore */
+QMessageBox {
+    background-color: #ffffff;
+}
+
+QMessageBox QLabel {
+    color: #333333;
+}
+
+/* Stile per i tooltip - importante per l'accessibilità */
+QToolTip {
+    background-color: #ffffdc;
+    color: #333333;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 4px;
+    font-size: 12px;
+}
+
+/* Stile per lo stato di focus - importante per l'accessibilità */
+*:focus {
+    outline: 2px solid #0078d7;
+    outline-offset: 1px;
+}

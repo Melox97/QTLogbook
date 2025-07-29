@@ -72,25 +72,36 @@ void MainWindow::setupUI()
     m_centralWidget = new QWidget(this);
     setCentralWidget(m_centralWidget);
     
+    // Imposta margini e spaziatura per un aspetto più moderno
     m_mainLayout = new QVBoxLayout(m_centralWidget);
+    m_mainLayout->setContentsMargins(20, 20, 20, 20);
+    m_mainLayout->setSpacing(15);
     
-    // Layout del form
+    // Layout del form con spaziatura migliorata
     m_formLayout = new QGridLayout();
+    m_formLayout->setHorizontalSpacing(12);
+    m_formLayout->setVerticalSpacing(10);
+    m_formLayout->setColumnStretch(1, 1); // La colonna dei campi si espande
     
     // Data e ora
     m_dateTimeLabel = new QLabel("Data/Ora UTC:");
+    m_dateTimeLabel->setObjectName("fieldLabel");
     m_dateTimeEdit = new QLineEdit();
     m_dateTimeEdit->setReadOnly(true);
     m_dateTimeEdit->setAccessibleName("<span lang=\"it\">Campo data e ora UTC, sola lettura</span>");
+    m_dateTimeEdit->setToolTip("Data e ora UTC del contatto (aggiornata automaticamente)");
     m_formLayout->addWidget(m_dateTimeLabel, 0, 0);
     m_formLayout->addWidget(m_dateTimeEdit, 0, 1);
     
     // Nominativo
     m_callsignLabel = new QLabel("Nominativo:");
+    m_callsignLabel->setObjectName("fieldLabel");
     m_callsignEdit = new QLineEdit();
     m_callsignEdit->setPlaceholderText("Es: IZ0ABC");
     m_callsignEdit->setAccessibleName("<span lang=\"it\">Campo nominativo radioamatoriale</span>");
     m_callsignEdit->setAccessibleDescription("<span lang=\"it\">Inserire il nominativo della stazione contattata</span>");
+    m_callsignEdit->setToolTip("Inserisci il nominativo della stazione contattata");
+    m_callsignEdit->setObjectName("callsignEdit"); // Per stile specifico
     
     // Connetti il segnale per convertire automaticamente in maiuscolo
     connect(m_callsignEdit, &QLineEdit::textEdited, this, &MainWindow::onCallsignTextEdited);
@@ -100,70 +111,99 @@ void MainWindow::setupUI()
     
     // Banda
     m_bandLabel = new QLabel("Banda:");
+    m_bandLabel->setObjectName("fieldLabel");
     m_bandCombo = new QComboBox();
     m_bandCombo->setAccessibleName("<span lang=\"it\">Selezione banda di frequenza</span>");
+    m_bandCombo->setToolTip("Seleziona la banda di frequenza utilizzata per il contatto");
     m_formLayout->addWidget(m_bandLabel, 2, 0);
     m_formLayout->addWidget(m_bandCombo, 2, 1);
     
     // Modo
     m_modeLabel = new QLabel("Modo:");
+    m_modeLabel->setObjectName("fieldLabel");
     m_modeCombo = new QComboBox();
     m_modeCombo->setAccessibleName("<span lang=\"it\">Selezione modo di trasmissione</span>");
+    m_modeCombo->setToolTip("Seleziona il modo di trasmissione utilizzato per il contatto");
     m_formLayout->addWidget(m_modeLabel, 3, 0);
     m_formLayout->addWidget(m_modeCombo, 3, 1);
     
     // RST inviato
     m_rstSentLabel = new QLabel("RST Inviato:");
+    m_rstSentLabel->setObjectName("fieldLabel");
     m_rstSentEdit = new QLineEdit();
     m_rstSentEdit->setPlaceholderText("599");
     m_rstSentEdit->setMaxLength(3);
     m_rstSentEdit->setAccessibleName("<span lang=\"it\">Campo RST inviato</span>");
     m_rstSentEdit->setAccessibleDescription("<span lang=\"it\">Rapporto RST inviato, 3 cifre</span>");
+    m_rstSentEdit->setToolTip("Inserisci il rapporto RST inviato (es. 599)");
+    m_rstSentEdit->setFixedWidth(80); // Larghezza fissa per campo corto
     m_formLayout->addWidget(m_rstSentLabel, 4, 0);
     m_formLayout->addWidget(m_rstSentEdit, 4, 1);
     
     // RST ricevuto
     m_rstReceivedLabel = new QLabel("RST Ricevuto:");
+    m_rstReceivedLabel->setObjectName("fieldLabel");
     m_rstReceivedEdit = new QLineEdit();
     m_rstReceivedEdit->setPlaceholderText("599");
     m_rstReceivedEdit->setMaxLength(3);
     m_rstReceivedEdit->setAccessibleName("<span lang=\"it\">Campo RST ricevuto</span>");
     m_rstReceivedEdit->setAccessibleDescription("<span lang=\"it\">Rapporto RST ricevuto, 3 cifre</span>");
+    m_rstReceivedEdit->setToolTip("Inserisci il rapporto RST ricevuto (es. 599)");
+    m_rstReceivedEdit->setFixedWidth(80); // Larghezza fissa per campo corto
     m_formLayout->addWidget(m_rstReceivedLabel, 5, 0);
     m_formLayout->addWidget(m_rstReceivedEdit, 5, 1);
     
     // DXCC
     m_dxccLabel = new QLabel("DXCC:");
+    m_dxccLabel->setObjectName("fieldLabel");
     m_dxccEdit = new QLineEdit();
     m_dxccEdit->setReadOnly(true);
     m_dxccEdit->setAccessibleName("<span lang=\"it\">Campo DXCC, determinato automaticamente</span>");
+    m_dxccEdit->setToolTip("Entità DXCC determinata automaticamente dal nominativo");
+    m_dxccEdit->setStyleSheet("background-color: #f8f8f8;"); // Sfondo leggermente diverso per campi di sola lettura
     m_formLayout->addWidget(m_dxccLabel, 6, 0);
     m_formLayout->addWidget(m_dxccEdit, 6, 1);
     
     // Locatore
     m_locatorLabel = new QLabel("Locatore:");
+    m_locatorLabel->setObjectName("fieldLabel");
     m_locatorEdit = new QLineEdit();
     m_locatorEdit->setReadOnly(true);
     m_locatorEdit->setAccessibleName("<span lang=\"it\">Campo locatore, determinato automaticamente</span>");
+    m_locatorEdit->setToolTip("Locatore Maidenhead determinato automaticamente dal nominativo");
+    m_locatorEdit->setStyleSheet("background-color: #f8f8f8;"); // Sfondo leggermente diverso per campi di sola lettura
     m_formLayout->addWidget(m_locatorLabel, 7, 0);
     m_formLayout->addWidget(m_locatorEdit, 7, 1);
     
     // Operatore
     m_operatorLabel = new QLabel("Operatore:");
+    m_operatorLabel->setObjectName("fieldLabel");
     m_operatorEdit = new QLineEdit();
     m_operatorEdit->setReadOnly(true);
     m_operatorEdit->setAccessibleName("<span lang=\"it\">Campo operatore, configurato nelle impostazioni</span>");
+    m_operatorEdit->setToolTip("Nominativo dell'operatore configurato nelle impostazioni");
+    m_operatorEdit->setStyleSheet("background-color: #f8f8f8;"); // Sfondo leggermente diverso per campi di sola lettura
     m_formLayout->addWidget(m_operatorLabel, 8, 0);
     m_formLayout->addWidget(m_operatorEdit, 8, 1);
     
     m_mainLayout->addLayout(m_formLayout);
     
-    // Pulsanti
+    // Pulsanti con stile migliorato
     m_buttonLayout = new QHBoxLayout();
+    m_buttonLayout->setSpacing(10);
+    m_buttonLayout->setContentsMargins(0, 15, 0, 15); // Aggiungi spazio sopra e sotto i pulsanti
+    
     m_addButton = new QPushButton("Aggiungi Contatto");
     m_addButton->setAccessibleName("<span lang=\"it\">Pulsante per aggiungere il contatto al logbook</span>");
+    m_addButton->setToolTip("Aggiungi questo contatto al logbook");
+    m_addButton->setMinimumWidth(150);
+    m_addButton->setCursor(Qt::PointingHandCursor);
+    
     m_clearButton = new QPushButton("Pulisci Form");
     m_clearButton->setAccessibleName("<span lang=\"it\">Pulsante per pulire tutti i campi del form</span>");
+    m_clearButton->setToolTip("Pulisci tutti i campi del form");
+    m_clearButton->setMinimumWidth(120);
+    m_clearButton->setCursor(Qt::PointingHandCursor);
     
     m_buttonLayout->addWidget(m_addButton);
     m_buttonLayout->addWidget(m_clearButton);
@@ -171,20 +211,33 @@ void MainWindow::setupUI()
     
     m_mainLayout->addLayout(m_buttonLayout);
     
-    // Tabella contatti
+    // Tabella contatti con stile migliorato
     m_contactsModel = new LogbookModel(this);
     m_contactsTable = new QTableView();
     m_contactsTable->setModel(m_contactsModel);
     m_contactsTable->setAlternatingRowColors(true);
     m_contactsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_contactsTable->setSelectionMode(QAbstractItemView::SingleSelection);
     m_contactsTable->horizontalHeader()->setStretchLastSection(true);
+    m_contactsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    m_contactsTable->verticalHeader()->setVisible(false); // Nascondi l'intestazione verticale
+    m_contactsTable->setShowGrid(true);
+    m_contactsTable->setGridStyle(Qt::SolidLine);
+    m_contactsTable->setFrameShape(QFrame::NoFrame); // Rimuovi il bordo esterno
     m_contactsTable->setAccessibleName("<span lang=\"it\">Tabella dei contatti del logbook</span>");
+    m_contactsTable->setAccessibleDescription("<span lang=\"it\">Tabella che mostra tutti i contatti registrati nel logbook</span>");
     
     m_mainLayout->addWidget(m_contactsTable);
     
-    // Imposta il titolo della finestra
+    // Imposta il titolo della finestra e dimensioni ottimali
     setWindowTitle("QT Logbook - Logbook Radioamatoriale");
-    resize(800, 600);
+    resize(900, 700); // Dimensioni leggermente maggiori per una migliore visualizzazione
+    
+    // Imposta lo stile per i widget principali
+    m_centralWidget->setObjectName("centralWidget");
+    m_contactsTable->setObjectName("contactsTable");
+    m_addButton->setObjectName("addButton");
+    m_clearButton->setObjectName("clearButton");
 }
 
 void MainWindow::setupMenuBar()

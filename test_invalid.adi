@@ -1,5 +1,0 @@
-This is not a valid ADIF file
-It lacks proper ADIF headers and format
-
-Some random text that should trigger validation errors
-<CALL:6>IZ0ABC but no proper ADIF structure
